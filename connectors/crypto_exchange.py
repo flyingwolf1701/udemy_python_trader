@@ -7,6 +7,8 @@ import traceback
 from typing import Dict, Any, List, Union
 
 from secret_keys import Secrets
+from models import Candle
+
 
 logger = logging.getLogger(__name__)
 
@@ -276,6 +278,54 @@ class CryptoExchangeClient:
         resp = requests.get(url, params=params, timeout=10)
         resp.raise_for_status()
         return resp.json().get("result", {}).get("data", [])
+    
+    def get_historical_candles(
+        self,
+        instrument_name: str,
+        interval: str,         # e.g. "1m", "5m", "1h", "1d"
+        count: int = 25,
+        start_ts: int | None = None,
+        end_ts: int | None = None,
+    ) -> List[Candle]:
+        """
+        Fetch historical OHLCV data from Crypto.com Exchange.
+
+        :param instrument_name: e.g. "BTCUSD-PERP"
+        :param interval: one of "1m","5m","15m","30m","1h","2h","4h","12h","1d","7d","14d","1M"
+        :param count: number of candles to return (default 25)
+        :param start_ts: optional inclusive start timestamp (ms)
+        :param end_ts: optional exclusive end timestamp (ms)
+        :returns: list of Candle(timestamp, open, high, low, close, volume)
+        """
+        url = f"{self.base_url}/public/get-candlestick"
+        params: Dict[str, Union[str, int]] = {
+            "instrument_name": instrument_name,
+            "timeframe": interval,
+            "count": count,
+        }
+        if start_ts is not None:
+            params["start_ts"] = start_ts
+        if end_ts is not None:
+            params["end_ts"] = end_ts
+
+        resp = requests.get(url, params=params, timeout=10)
+        resp.raise_for_status()
+        result = resp.json().get("result", {})
+        data = result.get("data", [])
+
+        candles: List[Candle] = []
+        for item in data:
+            candles.append(
+                Candle(
+                    timestamp=int(item["t"]),
+                    open=float(item["o"]),
+                    high=float(item["h"]),
+                    low=float(item["l"]),
+                    close=float(item["c"]),
+                    volume=float(item["v"]),
+                )
+            )
+        return candles
 
     # ----------------------------
     # Private Endpoints

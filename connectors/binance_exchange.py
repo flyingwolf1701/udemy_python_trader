@@ -22,9 +22,16 @@ class BinanceExchangeClient:
     Uses API key and secret from Secrets configuration.
     """
 
-    def __init__(self):
-        self._public_key = Secrets.BINANCE_API_KEY
-        self._secret_key = Secrets.BINANCE_API_SECRET
+    def __init__(self, public_key=None, secret_key=None):
+        """
+        Initialize Binance Exchange client.
+        
+        Args:
+            public_key: Optional API key to override from Secrets
+            secret_key: Optional API secret to override from Secrets
+        """
+        self._public_key = public_key or Secrets.BINANCE_API_KEY
+        self._secret_key = secret_key or Secrets.BINANCE_API_SECRET
 
         # Spot REST API base URL for Binance.US
         self._base_url = "https://api.binance.us"
