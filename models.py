@@ -1,10 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
-
-# Constants for BitMEX data adjustments
-BITMEX_MULTIPLIER = 0.00000001
-BITMEX_TF_MINUTES = {"1m": 1, "5m": 5, "1h": 60, "1d": 1440}
 
 
 def tick_to_decimals(tick_size: float) -> int:
@@ -22,7 +17,6 @@ class Balance:
     """
     Account balance representation for different exchanges.
     """
-
     free: Optional[float] = None
     locked: Optional[float] = None
     initial_margin: Optional[float] = None
@@ -45,15 +39,11 @@ class Balance:
                 wallet_balance=float(info["walletBalance"]),
                 unrealized_pnl=float(info["unrealizedProfit"]),
             )
-        elif exchange == "bitmex":
-            # Scale BitMEX margins to asset units
-            return cls(
-                initial_margin=info["initMargin"] * BITMEX_MULTIPLIER,
-                maintenance_margin=info["maintMargin"] * BITMEX_MULTIPLIER,
-                margin_balance=info["marginBalance"] * BITMEX_MULTIPLIER,
-                wallet_balance=info["walletBalance"] * BITMEX_MULTIPLIER,
-                unrealized_pnl=info["unrealisedPnl"] * BITMEX_MULTIPLIER,
-            )
+        elif exchange == "crypto":
+            # Crypto.com spot account
+            free = float(info.get("available", info.get("free", 0.0)))
+            locked = float(info.get("freeze", info.get("locked", 0.0)))
+            return cls(free=free, locked=locked)
         else:
             raise ValueError(f"Unsupported exchange: {exchange}")
 
@@ -63,7 +53,6 @@ class Candle:
     """
     Historical price candle data.
     """
-
     timestamp: int
     open: float
     high: float
@@ -83,22 +72,20 @@ class Candle:
                 close=float(candle_info[4]),
                 volume=float(candle_info[5]),
             )
-        elif exchange == "bitmex":
-            ts_str = candle_info["timestamp"]
-            # Convert ISO8601 UTC string to datetime
-            iso = ts_str.rstrip("Z") + "+00:00"
-            dt = datetime.fromisoformat(iso)
-            # Adjust back one period for proper open time
-            delta = timedelta(minutes=BITMEX_TF_MINUTES[timeframe])
-            ts = int((dt - delta).timestamp() * 1000)
-            return cls(
-                timestamp=ts,
-                open=candle_info["open"],
-                high=candle_info["high"],
-                low=candle_info["low"],
-                close=candle_info["close"],
-                volume=candle_info["volume"],
-            )
+        elif exchange == "crypto":
+            # Crypto.com Exchange v1 candlestick format
+            if isinstance(candle_info, dict):
+                ts = int(candle_info.get("t", candle_info.get("timestamp")))
+                return cls(
+                    timestamp=ts,
+                    open=float(candle_info["o"]),
+                    high=float(candle_info["h"]),
+                    low=float(candle_info["l"]),
+                    close=float(candle_info["c"]),
+                    volume=float(candle_info["v"]),
+                )
+            else:
+                raise ValueError("Unsupported candle format for crypto exchange")
         else:
             raise ValueError(f"Unsupported exchange: {exchange}")
 
@@ -108,7 +95,6 @@ class Contract:
     """
     Market contract/instrument representation.
     """
-
     symbol: str
     base_asset: str
     quote_asset: str
@@ -120,7 +106,6 @@ class Contract:
     @classmethod
     def from_info(cls, info: Dict[str, Any], exchange: str) -> "Contract":
         if exchange == "binance":
-            # Extract filters for tick and lot sizes
             filters = info.get("filters", [])
             tick_size = 0.0
             lot_size = 0.0
@@ -140,15 +125,23 @@ class Contract:
                 tick_size=tick_size,
                 lot_size=lot_size,
             )
-        elif exchange == "bitmex":
+        elif exchange == "crypto":
+            # Crypto.com Exchange v1 instrument format
+            symbol = info.get("instrument_name", info.get("symbol"))
+            base_asset = info.get("base_coin", info.get("baseAsset"))
+            quote_asset = info.get("quote_coin", info.get("quoteAsset"))
+            tick_size = float(info.get("tick_size", info.get("price_tick_size", 0.0)))
+            lot_size = float(info.get("lot_size", info.get("qty_tick_size", 0.0)))
+            price_decimals = tick_to_decimals(tick_size)
+            quantity_decimals = tick_to_decimals(lot_size)
             return cls(
-                symbol=info["symbol"],
-                base_asset=info["rootSymbol"],
-                quote_asset=info["quoteCurrency"],
-                price_decimals=tick_to_decimals(info["tickSize"]),
-                quantity_decimals=tick_to_decimals(info["lotSize"]),
-                tick_size=info["tickSize"],
-                lot_size=info["lotSize"],
+                symbol=symbol,
+                base_asset=base_asset,
+                quote_asset=quote_asset,
+                price_decimals=price_decimals,
+                quantity_decimals=quantity_decimals,
+                tick_size=tick_size,
+                lot_size=lot_size,
             )
         else:
             raise ValueError(f"Unsupported exchange: {exchange}")
@@ -159,7 +152,6 @@ class OrderStatus:
     """
     Status report for an order.
     """
-
     order_id: Any
     status: str
     avg_price: float
@@ -172,11 +164,11 @@ class OrderStatus:
                 status=info["status"],
                 avg_price=float(info.get("avgPrice", 0)),
             )
-        elif exchange == "bitmex":
-            return cls(
-                order_id=info["orderID"],
-                status=info["ordStatus"],
-                avg_price=info.get("avgPx", 0),
-            )
+        elif exchange == "crypto":
+            # Crypto.com Exchange v1 order format
+            order_id = info.get("order_id", info.get("id", info.get("orderId")))
+            status = info.get("status", "")
+            avg_price = float(info.get("avg_price", info.get("price", 0)))
+            return cls(order_id=order_id, status=status, avg_price=avg_price)
         else:
             raise ValueError(f"Unsupported exchange: {exchange}")

@@ -24,8 +24,11 @@ logger.addHandler(file_handler)
 
 
 if __name__ == "__main__":
-    binance = BinanceExchangeClient("", "", True)
-    crypto = CryptoExchangeClient("", "", True)
+    binance = BinanceExchangeClient()
+
+    # Crypto.com sandbox (UAT) mode enabled
+    crypto  = CryptoExchangeClient(testnet=True)
+
 
     root = Root(binance, crypto)
     root.mainloop()
