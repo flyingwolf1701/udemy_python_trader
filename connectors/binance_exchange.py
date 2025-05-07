@@ -1,240 +1,200 @@
-import time
-import hmac
-import hashlib
 import logging
 import requests
-from typing import Dict, Any, List, Union
+import time
+import typing
 
+from urllib.parse import urlencode
+import hmac
+import hashlib
+import websocket  # requires `pip install websocket-client`
+import json
+import threading
+
+from models import Contract, Balance, Candle, OrderStatus  # uses dataclass factories
 from secret_keys import Secrets
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
-
-class CryptoExchangeClient:
+class BinanceClient:
     """
-    Client for Crypto.com Exchange v1 REST/JSON-RPC API.
-
-    Public endpoints (GET):
-      - /public/get-instruments
-      - /public/get-book
-      - /public/get-trades
-
-    Private endpoints (POST JSON-RPC):
-      - /private/user-balance
-      - /private/create-order
-      - /private/cancel-order
-      - etc.
-
-    Signature for private calls:
-      sig = HMAC_SHA256(secret, method + id + api_key + paramString + nonce)
-    where paramString is the deterministic concatenation of sorted param keys & values recursively.
-
-    Docs: https://exchange-docs.crypto.com/exchange/v1/rest-ws/index.html
+    Client for interacting with Binance.US Spot REST and WebSocket APIs.
+    Uses API key and secret from Secrets configuration.
     """
+    def __init__(self):
+        self._public_key = Secrets.BINANCE_API_KEY
+        self._secret_key = Secrets.BINANCE_API_SECRET
 
-    BASE_URL = "https://api.crypto.com/exchange/v1"
+        # Spot REST API base URL for Binance.US
+        self._base_url = "https://api.binance.us"
+        # Spot WebSocket base endpoint for market streams
+        self._wss_url = "wss://stream.binance.us:9443/ws"
 
-    def __init__(self, base_url: str = BASE_URL):
-        self.api_key = Secrets.CRYPTO_API_KEY
-        self.api_secret = Secrets.CRYPTO_API_SECRET.encode()
-        self.base_url = base_url.rstrip("/")
+        self._headers = {'X-MBX-APIKEY': self._public_key}
 
-    # ----------------------------
-    # Public REST endpoints (GET)
-    # ----------------------------
+        # Initialize data
+        self.contracts = self._load_contracts()
+        self.balances = self._load_balances()
+        self.prices = {}
+        self.logs = []
 
-    def get_instruments(self) -> List[Dict[str, Any]]:
-        """Fetch all available trading instruments."""
-        url = f"{self.base_url}/public/get-instruments"
-        resp = requests.get(url, timeout=10)
-        resp.raise_for_status()
-        return resp.json().get("result", {}).get("data", [])
+        # Start websocket thread
+        self._ws_id = 1
+        self._ws = None
+        t = threading.Thread(target=self._start_ws)
+        t.daemon = True
+        t.start()
 
-    def get_order_book(self, instrument_name: str, depth: int = 10) -> Dict[str, Any]:
-        """Fetch order book for a given instrument."""
-        url = f"{self.base_url}/public/get-book"
-        params = {"instrument_name": instrument_name, "depth": depth}
-        resp = requests.get(url, params=params, timeout=10)
-        resp.raise_for_status()
-        data = resp.json().get("result", {}).get("data", [])
-        if data:
-            book = data[0]
-            return {"bids": book.get("bids", []), "asks": book.get("asks", [])}
-        return {"bids": [], "asks": []}
+        logger.info("✅ BinanceClient instantiated successfully")
 
-    def get_trades(self, instrument_name: str, count: int = 100) -> List[Dict[str, Any]]:
-        """Fetch recent trades for a given instrument."""
-        url = f"{self.base_url}/public/get-trades"
-        params = {"instrument_name": instrument_name, "count": count}
-        resp = requests.get(url, params=params, timeout=10)
-        resp.raise_for_status()
-        return resp.json().get("result", {}).get("data", [])
+    def get_contracts(self) -> typing.Dict[str, Contract]:
+        """Public alias for fetching contracts"""
+        return self._load_contracts()
 
-    # --------------------------------
-    # Helper: signature + RPC POST
-    # --------------------------------
+    def get_balances(self) -> typing.Dict[str, Balance]:
+        """Public alias for fetching balances"""
+        return self._load_balances()
 
-    @staticmethod
-    def _encode_params(obj: Union[Dict[str, Any], List[Any], Any], level: int = 0) -> str:
-        """
-        Recursively encode parameters into a deterministic string for signing.
+    def _add_log(self, msg: str):
+        logger.info(msg)
+        self.logs.append({"log": msg, "displayed": False})
 
-        Args:
-            obj: The parameter object (dict, list, or primitive).
-            level: Recursion depth to avoid infinite loops.
+    def _generate_signature(self, params: typing.Dict) -> str:
+        return hmac.new(
+            self._secret_key.encode(),
+            urlencode(params).encode(),
+            hashlib.sha256
+        ).hexdigest()
 
-        Returns:
-            A deterministic string representation of the parameters.
-        """
-        if level > 10:
-            # Safety check to prevent infinite recursion
-            return str(obj)
+    def _make_request(self, method: str, endpoint: str, params: typing.Dict):
+        url = self._base_url + endpoint
+        try:
+            if method == "GET":
+                resp = requests.get(url, params=params, headers=self._headers)
+            elif method == "POST":
+                resp = requests.post(url, params=params, headers=self._headers)
+            elif method == "DELETE":
+                resp = requests.delete(url, params=params, headers=self._headers)
+            else:
+                raise ValueError(f"Unsupported HTTP method: {method}")
+        except Exception as e:
+            logger.error("Connection error %s %s: %s", method, endpoint, e)
+            return None
 
-        if isinstance(obj, dict):
-            # Sort keys and recursively encode values
-            return "".join(
-                f"{k}{CryptoExchangeClient._encode_params(v, level + 1)}"
-                for k, v in sorted(obj.items())
-            )
-        if isinstance(obj, list):
-            # Recursively encode each element
-            return "".join(CryptoExchangeClient._encode_params(v, level + 1) for v in obj)
+        if resp.status_code == 200:
+            return resp.json()
+        logger.error("API error %s %s: %s (code %s)", method, endpoint, resp.text, resp.status_code)
+        return None
 
-        # Primitive type: convert to string
-        return str(obj)
+    def _load_contracts(self) -> typing.Dict[str, Contract]:
+        info = self._make_request("GET", "/api/v3/exchangeInfo", {})
+        contracts: typing.Dict[str, Contract] = {}
+        if info and 'symbols' in info:
+            for c in info['symbols']:
+                contract = Contract.from_info(c, "binance")
+                contracts[contract.symbol] = contract
+        return contracts
 
-    def _rpc(self, method: str, params: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Make a JSON-RPC POST request to the Crypto.com API, signing if private.
+    def _load_balances(self) -> typing.Dict[str, Balance]:
+        ts = int(time.time() * 1000)
+        params = {"timestamp": ts}
+        params["signature"] = self._generate_signature(params)
+        data = self._make_request("GET", "/api/v3/account", params)
+        balances: typing.Dict[str, Balance] = {}
+        if data and 'balances' in data:
+            for b in data['balances']:
+                balance = Balance.from_info(b, "binance")
+                # include only non-empty balances
+                if balance.free is not None or balance.initial_margin is not None:
+                    key = b.get('asset', '')
+                    balances[key] = balance
+        return balances
 
-        Args:
-            method: The API method name (e.g., "private/create-order").
-            params: The parameters dictionary.
+    def get_historical_candles(self, contract: Contract, interval: str) -> typing.List[Candle]:
+        params = {"symbol": contract.symbol, "interval": interval, "limit": 1000}
+        raw = self._make_request("GET", "/api/v3/klines", params)
+        return [Candle.from_api(c, interval, "binance") for c in raw] if raw else []
 
-        Returns:
-            The 'result' field from the API response.
+    def get_bid_ask(self, contract: Contract) -> typing.Dict[str, float]:
+        params = {"symbol": contract.symbol}
+        ob = self._make_request("GET", "/api/v3/ticker/bookTicker", params)
+        if ob:
+            bid = float(ob['bidPrice']); ask = float(ob['askPrice'])
+            self.prices[contract.symbol] = {'bid': bid, 'ask': ask}
+            return self.prices[contract.symbol]
 
-        Raises:
-            requests.HTTPError: For HTTP errors.
-            ValueError: For API response errors.
-        """
-        nonce = int(time.time() * 1000)
-        payload: Dict[str, Any] = {
-            "id": nonce,
-            "method": method,
-            "params": params or {},
-            "nonce": nonce,
-        }
-
-        if method.startswith("private/"):
-            payload["api_key"] = self.api_key
-            param_str = self._encode_params(payload["params"])
-            # Correct signature construction per docs:
-            sig_base = f"{method}{payload['id']}{self.api_key}{param_str}{nonce}"
-            signature = hmac.new(
-                self.api_secret, sig_base.encode(), hashlib.sha256
-            ).hexdigest()
-            payload["sig"] = signature
-
-        url = f"{self.base_url}/{method}"
-        resp = requests.post(url, json=payload, timeout=10)
-        resp.raise_for_status()
-        data = resp.json()
-
-        if data.get("code", 0) != 0:
-            error_msg = data.get("message", "Unknown error")
-            raise ValueError(f"API error {method}: code={data.get('code')} message={error_msg}")
-
-        return data.get("result", {})
-
-    # --------------------------------
-    # Private account / trading endpoints
-    # --------------------------------
-
-    def get_account_summary(self) -> List[Dict[str, Any]]:
-        """
-        Get wallet balances.
-
-        Returns:
-            List of balance dicts.
-        """
-        result = self._rpc("private/user-balance", {})
-        return result.get("data", [])
-
-    def create_order(
-        self,
-        instrument_name: str,
-        side: str,
-        type_: str,
-        quantity: str,
-        price: str | None = None,
-    ) -> Dict[str, Any]:
-        """
-        Create a new order.
-
-        Args:
-            instrument_name: Trading pair symbol, e.g., "BTC_USDT".
-            side: "BUY" or "SELL".
-            type_: Order type, e.g., "LIMIT" or "MARKET".
-            quantity: Order quantity as string.
-            price: Price as string (required for LIMIT orders).
-
-        Returns:
-            Order details dict.
-        """
-        params: Dict[str, Any] = {
-            "instrument_name": instrument_name,
-            "side": side,
-            "type": type_,
-            "quantity": quantity,
-        }
+    def place_order(self, contract: Contract, side: str, quantity: float, order_type: str,
+                    price: float = None, tif: str = None) -> OrderStatus:
+        params = {"symbol": contract.symbol, "side": side, "type": order_type}
+        params["quantity"] = round(
+            round(quantity / contract.lot_size) * contract.lot_size,
+            contract.quantity_decimals
+        )
         if price is not None:
-            params["price"] = price
+            params["price"] = round(
+                round(price / contract.tick_size) * contract.tick_size,
+                contract.price_decimals
+            )
+        if tif:
+            params["timeInForce"] = tif
+        params["timestamp"] = int(time.time() * 1000)
+        params["signature"] = self._generate_signature(params)
+        result = self._make_request("POST", "/api/v3/order", params)
+        return OrderStatus.from_api(result, "binance") if result else None
 
-        result = self._rpc("private/create-order", params)
-        return result.get("data", {})
+    def cancel_order(self, contract: Contract, order_id: int) -> OrderStatus:
+        params = {"symbol": contract.symbol, "orderId": order_id, "timestamp": int(time.time() * 1000)}
+        params["signature"] = self._generate_signature(params)
+        result = self._make_request("DELETE", "/api/v3/order", params)
+        return OrderStatus.from_api(result, "binance") if result else None
 
-    def cancel_order(self, order_id: str) -> Dict[str, Any]:
-        """
-        Cancel an order by ID.
+    def get_order_status(self, contract: Contract, order_id: int) -> OrderStatus:
+        params = {"symbol": contract.symbol, "orderId": order_id, "timestamp": int(time.time() * 1000)}
+        params["signature"] = self._generate_signature(params)
+        result = self._make_request("GET", "/api/v3/order", params)
+        return OrderStatus.from_api(result, "binance") if result else None
 
-        Args:
-            order_id: The order ID string.
+    def _start_ws(self):
+        # ensure using websocket-client‘s WebSocketApp
+        self._ws = websocket.WebSocketApp(
+            self._wss_url,
+            on_open=self._on_open,
+            on_close=self._on_close,
+            on_error=self._on_error,
+            on_message=self._on_message
+        )
+        while True:
+            try:
+                self._ws.run_forever()
+            except Exception as e:
+                logger.error("WebSocket error: %s", e)
+            time.sleep(2)
 
-        Returns:
-            Cancellation result dict.
-        """
-        result = self._rpc("private/cancel-order", {"order_id": order_id})
-        return result.get("data", {})
+    def _on_open(self, ws):
+        logger.info("WS connection opened")
+        self.subscribe_channel(list(self.contracts.values()), "bookTicker")
 
-    def get_order(self, order_id: str) -> Dict[str, Any]:
-        """
-        Get detailed info about a specific order.
+    def _on_close(self, ws):
+        logger.warning("WS connection closed")
 
-        Args:
-            order_id: The order ID string.
+    def _on_error(self, ws, error):
+        logger.error("WS error: %s", error)
 
-        Returns:
-            Order details dict.
-        """
-        result = self._rpc("private/get-order-detail", {"order_id": order_id})
-        return result.get("data", {})
+    def _on_message(self, ws, msg: str):
+        data = json.loads(msg)
+        if data.get('e') == 'bookTicker':
+            s = data['s']
+            self.prices.setdefault(s, {})
+            self.prices[s]['bid'] = float(data['b'])
+            self.prices[s]['ask'] = float(data['a'])
 
-    def get_open_orders(self, instrument_name: str) -> List[Dict[str, Any]]:
-        """
-        Get all open orders for a given instrument.
-
-        Args:
-            instrument_name: Trading pair symbol.
-
-        Returns:
-            List of open orders.
-        """
-        result = self._rpc("private/get-open-orders", {"instrument_name": instrument_name})
-        return result.get("data", [])
-
-
-# Example usage (uncomment to test):
-# if __name__ == "__main__":
-#     client = CryptoExchangeClient()
-#     print(client.get_instruments()[:3])
+    def subscribe_channel(self, contracts: typing.List[Contract], channel: str):
+        payload = {
+            "method": "SUBSCRIBE",
+            "params": [f"{c.symbol.lower()}@{channel}" for c in contracts],
+            "id": self._ws_id
+        }
+        try:
+            self._ws.send(json.dumps(payload))
+        except Exception as e:
+            logger.error("Subscribe error: %s", e)
+        self._ws_id += 1
