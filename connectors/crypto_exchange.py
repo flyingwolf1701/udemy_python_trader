@@ -11,22 +11,11 @@ from typing import Any, Dict, List, Optional, Union
 from secret_keys import Secrets
 from models import Candle, Contract, Balance, OrderStatus
 
-# Configure root logger to output debug messages
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
 logger = logging.getLogger(__name__)
-# Ensure module logger propagates to root
-logger.propagate = True
+# Enable debug logging for this module
+logger.setLevel(logging.DEBUG)
 
 class CryptoExchangeClient:
-    """
-    Simplified Crypto.com Exchange v1 API client with clear structure,
-    using requests.Session, concise signature logic, and unified error handling.
-    """
-    # Expected lengths for credentials
-    EXPECTED_KEY_LEN = 32
-    EXPECTED_SECRET_LEN = 64
-
     """
     Simplified Crypto.com Exchange v1 API client with clear structure,
     using requests.Session, concise signature logic, and unified error handling.
@@ -45,16 +34,7 @@ class CryptoExchangeClient:
         # Load credentials exclusively from environment
         self.api_key = Secrets.CRYPTO_API_KEY
         self.api_secret = Secrets.CRYPTO_API_SECRET
-        # Check presence and length of credentials
         if not self.api_key or not self.api_secret:
-            raise ValueError(
-                "CRYPTO_API_KEY and CRYPTO_API_SECRET must be set in environment for private endpoints"
-            )
-        # Validate length to catch truncated values
-        if len(self.api_key) != self.EXPECTED_KEY_LEN:
-            raise ValueError(f"CRYPTO_API_KEY appears invalid (length {len(self.api_key)}); expected {self.EXPECTED_KEY_LEN} characters")
-        if len(self.api_secret) != self.EXPECTED_SECRET_LEN:
-            raise ValueError(f"CRYPTO_API_SECRET appears invalid (length {len(self.api_secret)}); expected {self.EXPECTED_SECRET_LEN} characters")
             raise ValueError(
                 "CRYPTO_API_KEY and CRYPTO_API_SECRET must be set in environment for private endpoints"
             )
