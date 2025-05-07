@@ -61,11 +61,11 @@ def main():
                 # Prefer a common instrument if available, otherwise pick the first one
                 preferred_instruments = ["BTC_USDT", "ETH_USDT", "CRO_USDT"]
                 for pi in preferred_instruments:
-                    if any(inst['instrument_name'] == pi for inst in instruments):
+                    if any(inst['symbol'] == pi for inst in instruments):
                         fetched_instrument_for_test = pi
                         break
                 if not fetched_instrument_for_test:
-                    fetched_instrument_for_test = instruments[0]['instrument_name']
+                    fetched_instrument_for_test = instruments[0]['symbol']
                 logger.info(f"Selected '{fetched_instrument_for_test}' for subsequent tests.")
         elif isinstance(instruments, dict) and instruments.get("method") == "public/get-instruments":
              logger.warning(f"⚠️ Retrieved a dict, looks like raw response for get_instruments. Check parsing. Data: {instruments}")
