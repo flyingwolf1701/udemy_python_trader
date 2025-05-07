@@ -16,7 +16,7 @@ from secret_keys import Secrets
 logger = logging.getLogger()
 
 
-class BinanceClient:
+class BinanceExchangeClient:
     """
     Client for interacting with Binance.US Spot REST and WebSocket APIs.
     Uses API key and secret from Secrets configuration.

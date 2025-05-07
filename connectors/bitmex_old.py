@@ -19,7 +19,7 @@ from models import *
 logger = logging.getLogger()
 
 
-class BitmexClient:
+class CryptoExchangeClient:
     def __init__(self, public_key: str, secret_key: str, testnet: bool):
         if testnet:
             self._base_url = "https://testnet.bitmex.com"

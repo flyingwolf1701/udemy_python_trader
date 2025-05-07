@@ -33,7 +33,7 @@ class Candle:
             self.close = float(candle_info[4])
             self.volume = float(candle_info[5])
 
-        elif exchange == "bitmex":
+        elif exchange == "crypto":
             self.timestamp = dateutil.parser.isoparse(candle_info["timestamp"])
             self.timestamp = self.timestamp - datetime.timedelta(
                 minutes=BITMEX_TF_MINUTES[timeframe]
