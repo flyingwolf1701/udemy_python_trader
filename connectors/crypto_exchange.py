@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class CryptoExchangeClient:
     """
     Crypto.com Exchange API v1 REST client.
-    
+
     Implements a clean interface to the Crypto.com Exchange v1 API with support
     for both public and private endpoints.
     """
@@ -26,25 +26,33 @@ class CryptoExchangeClient:
     def __init__(self, base_url: str = BASE_URL):
         """
         Initialize the Crypto.com Exchange client.
-        
+
         Args:
             base_url: Base API URL (defaults to BASE_URL)
         """
         self.base_url = base_url.rstrip("/")
-        
+
         try:
             # Load API credentials
             self.api_key = Secrets.CRYPTO_API_KEY
             self.api_secret = Secrets.CRYPTO_API_SECRET
-            
+
             if not self.api_key:
                 logger.warning("API Key is None or empty - private endpoints will fail")
             if not self.api_secret:
-                logger.warning("API Secret is None or empty - private endpoints will fail")
+                logger.warning(
+                    "API Secret is None or empty - private endpoints will fail"
+                )
         except AttributeError as e:
-            logger.critical(f"Could not retrieve API key/secret from the Secrets module. Error: {e}")
-            logger.critical("Ensure CRYPTO_API_KEY and CRYPTO_API_SECRET are correctly defined in your secret_keys.py or .env file.")
-            raise ValueError("Failed to load API credentials from Secrets module.") from e
+            logger.critical(
+                f"Could not retrieve API key/secret from the Secrets module. Error: {e}"
+            )
+            logger.critical(
+                "Ensure CRYPTO_API_KEY and CRYPTO_API_SECRET are correctly defined in your secret_keys.py or .env file."
+            )
+            raise ValueError(
+                "Failed to load API credentials from Secrets module."
+            ) from e
 
     def _get_nonce(self) -> int:
         """Generate nonce using local time in milliseconds"""
@@ -53,53 +61,53 @@ class CryptoExchangeClient:
     def _params_to_str(self, obj: Any, level: int) -> str:
         """
         Convert params to string for signature generation according to API docs.
-        
+
         Args:
             obj: The parameter object to convert
             level: Current recursion level
-            
+
         Returns:
             String representation of parameters for signature
         """
         if level >= self.MAX_LEVEL:
             return str(obj)
-            
+
         if obj is None:
-            return 'null'
-            
+            return "null"
+
         if isinstance(obj, dict):
             return_str = ""
             for key in sorted(obj.keys()):  # Sort keys alphabetically
                 return_str += key
                 if obj[key] is None:
-                    return_str += 'null'
+                    return_str += "null"
                 elif isinstance(obj[key], list):
                     for sub_obj in obj[key]:
                         return_str += self._params_to_str(sub_obj, level + 1)
                 else:
                     return_str += str(obj[key])
             return return_str
-            
+
         elif isinstance(obj, list):
             return_str = ""
             for sub_obj in obj:
                 return_str += self._params_to_str(sub_obj, level + 1)
             return return_str
-            
+
         else:
             return str(obj)
 
     def _rpc(self, method: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute JSON-RPC call with retries and signature logic.
-        
+
         Args:
             method: API method name
             params: Request parameters
-            
+
         Returns:
             API response result data
-            
+
         Raises:
             ValueError: If API returns an error
             RuntimeError: If all retry attempts fail
@@ -116,20 +124,26 @@ class CryptoExchangeClient:
 
                 if method.startswith("private/"):
                     payload["api_key"] = self.api_key
-                    
+
                     # Generate parameter string according to official docs
                     param_str = ""
                     if "params" in payload and payload["params"]:
                         param_str = self._params_to_str(payload["params"], 0)
-                    
+
                     # Create signature base string: method + id + api_key + parameter_string + nonce
-                    sig_base_str = method + str(payload["id"]) + self.api_key + param_str + str(payload["nonce"])
-                    
+                    sig_base_str = (
+                        method
+                        + str(payload["id"])
+                        + self.api_key
+                        + param_str
+                        + str(payload["nonce"])
+                    )
+
                     # Generate HMAC-SHA256 signature
                     payload["sig"] = hmac.new(
-                        bytes(str(self.api_secret), 'utf-8'),
-                        msg=bytes(sig_base_str, 'utf-8'),
-                        digestmod=hashlib.sha256
+                        bytes(str(self.api_secret), "utf-8"),
+                        msg=bytes(sig_base_str, "utf-8"),
+                        digestmod=hashlib.sha256,
                     ).hexdigest()
 
                 url = f"{self.base_url}/{method}"
@@ -139,9 +153,13 @@ class CryptoExchangeClient:
                 try:
                     data = resp.json()
                 except requests.exceptions.JSONDecodeError:
-                    logger.error(f"Failed to decode JSON from response. Raw text: {resp.text}")
+                    logger.error(
+                        f"Failed to decode JSON from response. Raw text: {resp.text}"
+                    )
                     if resp.status_code == 401 and attempt < self.MAX_RETRIES - 1:
-                        logger.warning(f"Auth error (HTTP {resp.status_code}), retrying ({attempt + 1}/{self.MAX_RETRIES})...")
+                        logger.warning(
+                            f"Auth error (HTTP {resp.status_code}), retrying ({attempt + 1}/{self.MAX_RETRIES})..."
+                        )
                         time.sleep(0.5 * (attempt + 1))
                         continue
                     resp.raise_for_status()
@@ -149,23 +167,35 @@ class CryptoExchangeClient:
 
                 # Check for API-level errors
                 if data.get("code", 0) != 0:
-                    api_error_code = data.get('code')
-                    api_error_message = data.get('message', 'No message provided.')
-                    logger.error(f"API Error: Code {api_error_code}, Message: '{api_error_message}'")
-                    
+                    api_error_code = data.get("code")
+                    api_error_message = data.get("message", "No message provided.")
+                    logger.error(
+                        f"API Error: Code {api_error_code}, Message: '{api_error_message}'"
+                    )
+
                     # Retry on authentication failures
                     if api_error_code == 40101 and attempt < self.MAX_RETRIES - 1:
-                         logger.warning(f"API Auth error code {api_error_code}, retrying ({attempt + 1}/{self.MAX_RETRIES})...")
-                         time.sleep(0.5 * (attempt + 1))
-                         continue
+                        logger.warning(
+                            f"API Auth error code {api_error_code}, retrying ({attempt + 1}/{self.MAX_RETRIES})..."
+                        )
+                        time.sleep(0.5 * (attempt + 1))
+                        continue
                     raise ValueError(f"API Error {api_error_code}: {api_error_message}")
 
                 return data.get("result", {})
 
             except requests.HTTPError as e:
-                logger.error(f"HTTP Error: {e.response.status_code} {e.response.reason}")
-                if e.response is not None and e.response.status_code == 401 and attempt < self.MAX_RETRIES - 1:
-                    logger.warning(f"Auth error (HTTP 401), retrying ({attempt + 1}/{self.MAX_RETRIES})...")
+                logger.error(
+                    f"HTTP Error: {e.response.status_code} {e.response.reason}"
+                )
+                if (
+                    e.response is not None
+                    and e.response.status_code == 401
+                    and attempt < self.MAX_RETRIES - 1
+                ):
+                    logger.warning(
+                        f"Auth error (HTTP 401), retrying ({attempt + 1}/{self.MAX_RETRIES})..."
+                    )
                     time.sleep(0.5 * (attempt + 1))
                     continue
                 raise
@@ -177,7 +207,9 @@ class CryptoExchangeClient:
                     continue
                 raise
 
-        raise RuntimeError(f"Failed after {self.MAX_RETRIES} attempts for method {method}")
+        raise RuntimeError(
+            f"Failed after {self.MAX_RETRIES} attempts for method {method}"
+        )
 
     # ----------------------------
     # Public Endpoints
@@ -186,7 +218,7 @@ class CryptoExchangeClient:
     def get_instruments(self) -> List[Dict[str, Any]]:
         """
         Fetch all available trading instruments.
-        
+
         Returns:
             List of instrument details
         """
@@ -198,11 +230,11 @@ class CryptoExchangeClient:
     def get_order_book(self, instrument_name: str, depth: int = 10) -> Dict[str, Any]:
         """
         Fetch order book for a given instrument.
-        
+
         Args:
             instrument_name: Trading pair symbol (e.g., "BTC_USDT")
             depth: Order book depth (number of price levels)
-            
+
         Returns:
             Order book with bids and asks
         """
@@ -210,26 +242,32 @@ class CryptoExchangeClient:
         params = {"instrument_name": instrument_name, "depth": str(depth)}
         resp = requests.get(url, params=params, timeout=10)
         resp.raise_for_status()
-        
+
         result_data = resp.json().get("result", {})
         book_data_list = result_data.get("data", [])
 
-        if book_data_list and isinstance(book_data_list, list) and len(book_data_list) > 0:
+        if (
+            book_data_list
+            and isinstance(book_data_list, list)
+            and len(book_data_list) > 0
+        ):
             book_snapshot = book_data_list[0]
             return {
                 "bids": book_snapshot.get("bids", []),
-                "asks": book_snapshot.get("asks", [])
+                "asks": book_snapshot.get("asks", []),
             }
         return {"bids": [], "asks": []}
 
-    def get_trades(self, instrument_name: str, count: int = 100) -> List[Dict[str, Any]]:
+    def get_trades(
+        self, instrument_name: str, count: int = 100
+    ) -> List[Dict[str, Any]]:
         """
         Fetch recent trades for a given instrument.
-        
+
         Args:
             instrument_name: Trading pair symbol (e.g., "BTC_USDT")
             count: Number of trades to retrieve
-            
+
         Returns:
             List of recent trades
         """
@@ -246,12 +284,12 @@ class CryptoExchangeClient:
     def get_account_summary(self) -> List[Dict[str, Any]]:
         """
         Fetch wallet balances.
-        
+
         Returns:
             List of account balances
         """
         result = self._rpc("private/user-balance", {})
-        return result.get("data", []) 
+        return result.get("data", [])
 
     def create_order(
         self,
@@ -264,7 +302,7 @@ class CryptoExchangeClient:
     ) -> Dict[str, Any]:
         """
         Create a new order.
-        
+
         Args:
             instrument_name: Trading pair symbol (e.g., "BTC_USDT")
             side: "BUY" or "SELL"
@@ -272,10 +310,10 @@ class CryptoExchangeClient:
             quantity: Order quantity as string
             price: Price as string (required for LIMIT orders)
             client_oid: Optional client order ID
-            
+
         Returns:
             Order details
-            
+
         Raises:
             ValueError: If price is missing for LIMIT orders
         """
@@ -298,11 +336,11 @@ class CryptoExchangeClient:
     def cancel_order(self, order_id: str, instrument_name: str) -> Dict[str, Any]:
         """
         Cancel an order by ID.
-        
+
         Args:
             order_id: The order ID to cancel
             instrument_name: Trading pair symbol
-            
+
         Returns:
             Cancellation result
         """
@@ -312,25 +350,30 @@ class CryptoExchangeClient:
     def get_order(self, order_id: str) -> Dict[str, Any]:
         """
         Get detailed info about a specific order.
-        
+
         Args:
             order_id: The order ID string
-            
+
         Returns:
             Order details
         """
         params = {"order_id": order_id}
         return self._rpc("private/get-order-detail", params)
 
-    def get_open_orders(self, instrument_name: Union[str, None] = None, page_size: int = 20, page: int = 0) -> List[Dict[str, Any]]:
+    def get_open_orders(
+        self,
+        instrument_name: Union[str, None] = None,
+        page_size: int = 20,
+        page: int = 0,
+    ) -> List[Dict[str, Any]]:
         """
         Get all open orders for a given instrument.
-        
+
         Args:
             instrument_name: Trading pair symbol (optional)
             page_size: Number of orders per page
             page: Page number (0-indexed)
-            
+
         Returns:
             List of open orders
         """

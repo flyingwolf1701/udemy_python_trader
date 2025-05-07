@@ -7,6 +7,7 @@ Usage:
     Run from project root:
     python diagnostic/binance_diagnostic.py
 """
+
 import sys
 import traceback
 from pathlib import Path

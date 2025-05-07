@@ -8,5 +8,6 @@ dependencies = [
     "colorama>=0.4.6",
     "dotenv>=0.9.9",
     "requests>=2.32.3",
+    "ruff>=0.11.8",
     "websocket-client>=1.8.0",
 ]
