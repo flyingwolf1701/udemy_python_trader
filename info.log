@@ -219,3 +219,69 @@
 2025-05-07 07:51:23,439 INFO :: Subscribing to market data for 939 instruments
 2025-05-07 07:51:32,949 INFO :: Successfully sent 19 subscription chunks for 939 instruments
 2025-05-07 07:51:32,950 INFO :: Market data subscription complete
+2025-05-07 12:44:29,253 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 12:44:29,500 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 12:44:29,501 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 12:44:29,501 WARNING :: Missing API credentials - cannot fetch account balances
+2025-05-07 12:44:29,501 INFO :: Warning: API credentials required for account balances
+2025-05-07 12:44:29,502 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 12:44:29,502 INFO :: BinanceClient initialized successfully with API key: [MISSING]
+2025-05-07 12:44:29,503 WARNING :: API Key is None or empty - private endpoints will fail
+2025-05-07 12:44:29,503 WARNING :: API Secret is None or empty - private endpoints will fail
+2025-05-07 12:44:29,503 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 12:44:30,007 INFO :: Websocket connected
+2025-05-07 12:44:30,007 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 12:44:30,007 INFO :: Binance.US market data stream connected
+2025-05-07 12:44:30,007 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 12:44:30,008 INFO :: Subscription request sent for 575 contracts
+2025-05-07 12:44:30,065 INFO :: Successfully retrieved 939 instruments
+2025-05-07 12:44:30,066 INFO :: Successfully loaded 0 trading contracts
+2025-05-07 12:44:30,066 WARNING :: Skipping balance loading in testnet mode without credentials
+2025-05-07 12:44:30,066 INFO :: Sandbox mode active - using simulated balances
+2025-05-07 12:44:30,067 INFO :: Starting Crypto.com WebSocket connection to wss://uat-stream.3ona.co/exchange/v1/market...
+2025-05-07 12:44:30,067 INFO :: CryptoExchangeClient initialized in TESTNET (Sandbox) mode with API key: [MISSING]
+2025-05-07 12:44:31,241 INFO :: Websocket connected
+2025-05-07 12:44:31,241 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 12:44:31,241 INFO :: Sandbox WebSocket connection established
+2025-05-07 12:44:31,241 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 12:44:31,745 INFO :: Successfully retrieved 939 instruments
+2025-05-07 12:44:31,746 INFO :: Sample instrument format: dict_keys(['symbol', 'inst_type', 'display_name', 'base_ccy', 'quote_ccy', 'quote_decimals', 'quantity_decimals', 'price_tick_size', 'qty_tick_size', 'max_leverage', 'tradable', 'expiry_timestamp_ms', 'beta_product', 'underlying_symbol', 'contract_size', 'margin_buy_enabled', 'margin_sell_enabled'])
+2025-05-07 12:44:31,747 INFO :: Subscribing to 939 instrument tickers (valid: 939, invalid: 0)
+2025-05-07 12:44:31,747 INFO :: Subscribing to market data for 939 instruments
+2025-05-07 12:45:17,521 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 12:45:17,741 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 12:45:17,741 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 12:45:17,742 WARNING :: Missing API credentials - cannot fetch account balances
+2025-05-07 12:45:17,742 INFO :: Warning: API credentials required for account balances
+2025-05-07 12:45:17,743 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 12:45:17,743 INFO :: BinanceClient initialized successfully with API key: [MISSING]
+2025-05-07 12:45:17,743 WARNING :: API key/secret missing; private endpoints will not work.
+2025-05-07 12:45:18,188 INFO :: Websocket connected
+2025-05-07 12:45:18,189 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 12:45:18,190 INFO :: Binance.US market data stream connected
+2025-05-07 12:45:18,190 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 12:45:18,192 INFO :: Subscription request sent for 575 contracts
+2025-05-07 12:45:18,205 INFO :: Fetched 939 instruments.
+2025-05-07 12:45:18,208 INFO :: Loaded 939 trading contracts.
+2025-05-07 12:45:18,209 INFO :: CryptoExchangeClient initialized (TESTNET).
+2025-05-07 12:45:19,209 INFO :: Websocket connected
+2025-05-07 12:45:19,210 INFO :: WS connected
+2025-05-07 12:50:03,779 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 12:50:04,008 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 12:50:04,008 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 12:50:04,009 WARNING :: Missing API credentials - cannot fetch account balances
+2025-05-07 12:50:04,009 INFO :: Warning: API credentials required for account balances
+2025-05-07 12:50:04,010 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 12:50:04,010 INFO :: BinanceClient initialized successfully with API key: [MISSING]
+2025-05-07 12:50:04,011 WARNING :: API key/secret missing; private endpoints will not work.
+2025-05-07 12:50:04,418 INFO :: Fetched 939 instruments.
+2025-05-07 12:50:04,420 INFO :: Loaded 939 trading contracts.
+2025-05-07 12:50:04,421 INFO :: CryptoExchangeClient initialized (TESTNET).
+2025-05-07 12:50:04,462 INFO :: Websocket connected
+2025-05-07 12:50:04,463 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 12:50:04,463 INFO :: Binance.US market data stream connected
+2025-05-07 12:50:04,463 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 12:50:04,464 INFO :: Subscription request sent for 575 contracts
+2025-05-07 12:50:05,223 INFO :: Websocket connected
+2025-05-07 12:50:05,224 INFO :: WS connected
+2025-05-07 12:51:08,162 INFO :: WS closed: 1000

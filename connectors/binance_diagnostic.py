@@ -1,7 +1,7 @@
 """
 Binance Client Diagnostic Script
 --------------------------------
-Tests the BinanceClient to verify connectivity and data retrieval.
+Tests the BinanceExchangeClient to verify connectivity and data retrieval.
 
 Usage:
     Run from project root:
@@ -21,7 +21,7 @@ init(autoreset=True)
 project_root = Path(__file__).parent.parent  # adjust if needed
 sys.path.insert(0, str(project_root))
 
-from connectors.binance_exchange import BinanceClient
+from connectors.binance_exchange import BinanceExchangeClient
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -37,13 +37,13 @@ def print_test_header(name: str):
 
 def main():
     logger.info(f"Added {project_root} to PYTHONPATH")
-    logger.info("Initializing BinanceClient...")
+    logger.info("Initializing BinanceExchangeClient...")
 
     try:
-        client = BinanceClient()
-        logger.info("BinanceClient instantiated successfully")
+        client = BinanceExchangeClient()
+        logger.info("BinanceExchangeClient instantiated successfully")
     except Exception as e:
-        logger.error(f"❌ Failed to initialize BinanceClient: {e}")
+        logger.error(f"❌ Failed to initialize BinanceExchangeClient: {e}")
         logger.debug(traceback.format_exc())
         return
 

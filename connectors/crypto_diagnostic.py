@@ -11,11 +11,9 @@ init(autoreset=True)
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
-try:
-    from connectors.crypto_exchange import CryptoExchangeClient
-except ImportError:
-    logging.error("Failed to import CryptoExchangeClient. Ensure it's in the Python path and no circular imports.")
-    sys.exit(1)
+# Import client and secrets
+from connectors.crypto_exchange import CryptoExchangeClient
+from secret_keys import Secrets
 
 # Configure logger
 logger = logging.getLogger("crypto_diagnostic")
@@ -27,51 +25,135 @@ logging.basicConfig(
 # Default instrument for fallback
 TEST_INSTRUMENT = "BTC_USDT"
 
-# Counters for diagnostics
-diagnostics = {"passed": 0, "failed": 0}
+# Track test results
+test_results = []  # list of (name, passed: bool, message)
 
 
-def run_test(name: str, func):
+class LogCaptureHandler(logging.Handler):
+    """Handler to capture WARNING+ logs during a test."""
+    def __init__(self):
+        super().__init__()
+        self.records = []
+
+    def emit(self, record):
+        if record.levelno >= logging.WARNING:
+            self.records.append(record)
+
+
+def run_test(name: str, func, ignore_warnings: bool = False):
+    """Run a test, optionally ignoring warnings/errors captured."""
     logger.info(f"\n{Fore.CYAN}{Style.BRIGHT}===== Test: {name} ====={Style.RESET_ALL}")
+    handler = None
+    root_logger = logging.getLogger()
+    if not ignore_warnings:
+        handler = LogCaptureHandler()
+        root_logger.addHandler(handler)
+
+    passed = True
+    msg = ""
+    result = None
     try:
         result = func()
-        logger.info(f"✅ {name} passed.")
-        diagnostics["passed"] += 1
-        return result
+        if isinstance(result, tuple) and len(result) == 2 and result[0] is False:
+            passed = False
+            msg = result[1]
     except Exception as e:
-        logger.error(f"❌ {name} failed: {e}")
+        passed = False
+        msg = str(e)
         logger.debug(traceback.format_exc())
-        diagnostics["failed"] += 1
+    finally:
+        if handler:
+            root_logger.removeHandler(handler)
+
+    if handler and handler.records:
+        passed = False
+        log_msgs = "; ".join(f"{rec.levelname}: {rec.getMessage()}" for rec in handler.records)
+        msg = f"{msg + '; ' if msg else ''}{log_msgs}"
+
+    if passed:
+        logger.info(f"✅ {name} passed.")
+        test_results.append((name, True, ""))
+        return result
+    else:
+        logger.error(f"❌ {name} failed: {msg}")
+        test_results.append((name, False, msg))
         return None
 
 
-def main():
-    # Initialize client
-    client = run_test("Initialize crypto client", lambda: CryptoExchangeClient())
+def assert_non_empty(name, data):
+    if not data:
+        return False, f"{name} returned no data"
+    return True, ""
 
+
+def test_sequence(client, label):
     # Fetch instruments
-    instruments = run_test("Fetch instruments", client.get_instruments if client else lambda: [])
-    selected = TEST_INSTRUMENT
-    if instruments:
-        selected = instruments[0]["symbol"] if isinstance(instruments[0], dict) and "symbol" in instruments[0] else instruments[0]
+    def fetch_and_check_instruments():
+        inst = client.get_instruments()
+        ok, m = assert_non_empty(f"Fetch instruments ({label})", inst)
+        return (inst if ok else None) or (False, m)
+    instruments = run_test(f"Fetch instruments ({label})", fetch_and_check_instruments)
 
-    # Account summary (private)
-    run_test("Account summary", lambda: client.get_account_summary())
+    # Determine instrument symbol
+    selected = TEST_INSTRUMENT
+    if instruments and isinstance(instruments, list):
+        first = instruments[0]
+        selected = first.get("symbol") if isinstance(first, dict) and "symbol" in first else TEST_INSTRUMENT
+
+    # Account summary
+    def check_account_summary():
+        summary = client.get_account_summary()
+        ok, m = assert_non_empty(f"Account summary ({label})", summary)
+        return (summary if ok else None) or (False, m)
+    run_test(f"Account summary ({label})", check_account_summary)
 
     # Order book
-    run_test(
-        f"Order book for {selected}",
-        lambda: client.get_order_book(selected)
-    )
+    def check_order_book():
+        ob = client.get_order_book(selected)
+        ok, m = assert_non_empty(f"Order book for {selected} ({label})", ob.get("bids") or ob.get("asks"))
+        return (ob if ok else None) or (False, m)
+    run_test(f"Order book ({label})", check_order_book)
 
     # Recent trades
-    run_test(
-        f"Recent trades for {selected}",
-        lambda: client.get_trades(selected)
-    )
+    def check_recent_trades():
+        trades = client.get_trades(selected)
+        ok, m = assert_non_empty(f"Recent trades for {selected} ({label})", trades)
+        return (trades if ok else None) or (False, m)
+    run_test(f"Recent trades ({label})", check_recent_trades)
+
+
+def main():
+    # Check environment variables
+    missing = [var for var in ("CRYPTO_API_KEY", "CRYPTO_API_SECRET") if not getattr(Secrets, var)]
+    if missing:
+        logger.error(f"❌ Missing environment variables: {', '.join(missing)}")
+        test_results.append(("Environment variables", False, ", ".join(missing)))
+    else:
+        logger.info("✅ All Crypto API environment variables are set.")
+        test_results.append(("Environment variables", True, ""))
+
+    # Test live (prod) and sandbox (testnet)
+    for mode, ignore in [("PROD", False), ("TESTNET", True)]:
+        label = mode.lower()
+        client = run_test(
+            f"Initialize crypto client ({mode})",
+            lambda: CryptoExchangeClient(testnet=(mode == "TESTNET")),
+            ignore_warnings=ignore
+        )
+        if client:
+            test_sequence(client, label)
 
     # Summary
-    logger.info(f"\n{Fore.GREEN}{Style.BRIGHT}Diagnostics completed. Passed={diagnostics['passed']} Failed={diagnostics['failed']}{Style.RESET_ALL}")
+    total = len(test_results)
+    passed = [n for n, ok, _ in test_results if ok]
+    failed = [(n, m) for n, ok, m in test_results if not ok]
+
+    logger.info(f"\n{Fore.GREEN}{Style.BRIGHT}Diagnostics run: {total} tests. Passed: {len(passed)}. Failed: {len(failed)}{Style.RESET_ALL}")
+    if failed:
+        logger.error(f"{Fore.RED}Failures:{Style.RESET_ALL}")
+        for name, m in failed:
+            logger.error(f" - {name}: {m}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
