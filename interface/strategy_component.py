@@ -20,7 +20,7 @@ class StrategyEditor(tk.Frame):
 
         self.root = root
 
-        self._exchanges = {"Binance": binance, "crypto": crypto}
+        self._exchanges = {"Binance": binance, "Crypto": crypto}
 
         self._all_contracts = []
         self._all_timeframes = ["1m", "5m", "15m", "30m", "1h", "4h"]
