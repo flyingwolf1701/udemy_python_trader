@@ -27,6 +27,9 @@ class StrategyEditor(tk.Frame):
 
         for exchange, client in self._exchanges.items():
             for symbol, contract in client.contracts.items():
+                # Skip None values
+                if symbol is None:
+                    continue
                 self._all_contracts.append(symbol + "_" + exchange.capitalize())
 
         self._commands_frame = tk.Frame(self, bg=BG_COLOR)
@@ -71,7 +74,7 @@ class StrategyEditor(tk.Frame):
                 "code_name": "contract",
                 "widget": tk.OptionMenu,
                 "data_type": str,
-                "values": self._all_contracts,
+                "values": self._all_contracts if self._all_contracts else ["NONE_FOUND"],
                 "width": 15,
             },
             {
@@ -124,37 +127,6 @@ class StrategyEditor(tk.Frame):
                 "command": self._delete_row,
             },
         ]
-
-        self._extra_params = {
-            "Technical": [
-                {
-                    "code_name": "ema_fast",
-                    "name": "MACD Fast Length",
-                    "widget": tk.Entry,
-                    "data_type": int,
-                },
-                {
-                    "code_name": "ema_slow",
-                    "name": "MACD Slow Length",
-                    "widget": tk.Entry,
-                    "data_type": int,
-                },
-                {
-                    "code_name": "ema_signal",
-                    "name": "MACD Signal Length",
-                    "widget": tk.Entry,
-                    "data_type": int,
-                },
-            ],
-            "Breakout": [
-                {
-                    "code_name": "min_volume",
-                    "name": "Minimum Volume",
-                    "widget": tk.Entry,
-                    "data_type": float,
-                },
-            ],
-        }
 
         for idx, h in enumerate(self._headers):
             header = tk.Label(

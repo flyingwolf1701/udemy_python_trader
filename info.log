@@ -1,0 +1,221 @@
+2025-05-07 05:08:32,125 INFO :: Websocket connected
+2025-05-07 05:08:32,125 INFO :: WS connection opened
+2025-05-07 05:08:32,457 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 05:08:32,458 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 05:08:33,229 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 05:08:33,229 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 05:08:34,567 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 05:08:34,567 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 05:08:34,568 ERROR :: Failed to load balances: API Error 40101: Authentication failure
+2025-05-07 07:09:04,900 INFO :: BinanceClient instantiated successfully
+2025-05-07 07:09:05,616 INFO :: Websocket connected
+2025-05-07 07:09:05,616 INFO :: WS connection opened
+2025-05-07 07:09:06,128 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:09:06,128 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 07:09:06,947 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:09:06,948 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 07:09:08,194 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:09:08,194 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 07:09:08,195 ERROR :: Failed to load balances: API Error 40101: Authentication failure
+2025-05-07 07:09:08,195 INFO :: CryptoExchangeClient initialized in TESTNET mode
+2025-05-07 07:09:09,406 INFO :: Websocket connected
+2025-05-07 07:09:09,407 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:09:09,407 INFO :: WebSocket connection established
+2025-05-07 07:09:09,821 ERROR :: Failed to subscribe to market data: 'instrument_name'
+2025-05-07 07:10:12,178 ERROR :: error from callback <bound method CryptoExchangeClient._on_close of <connectors.crypto_exchange.CryptoExchangeClient object at 0x000002575E0DC6E0>>: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:10:12,178 ERROR :: Crypto.com WebSocket error: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:10:12,179 INFO :: WebSocket error: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:10:15,248 INFO :: Websocket connected
+2025-05-07 07:10:15,248 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:10:15,248 INFO :: WebSocket connection established
+2025-05-07 07:10:15,865 ERROR :: Failed to subscribe to market data: 'instrument_name'
+2025-05-07 07:11:26,144 ERROR :: error from callback <bound method CryptoExchangeClient._on_close of <connectors.crypto_exchange.CryptoExchangeClient object at 0x000002575E0DC6E0>>: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:11:26,144 ERROR :: Crypto.com WebSocket error: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:11:26,145 INFO :: WebSocket error: CryptoExchangeClient._on_close() takes 2 positional arguments but 4 were given
+2025-05-07 07:11:28,871 INFO :: Websocket connected
+2025-05-07 07:11:28,871 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:11:28,871 INFO :: WebSocket connection established
+2025-05-07 07:11:29,286 ERROR :: Failed to subscribe to market data: 'instrument_name'
+2025-05-07 07:13:08,097 INFO :: BinanceClient instantiated successfully
+2025-05-07 07:13:08,712 INFO :: Websocket connected
+2025-05-07 07:13:08,712 INFO :: WS connection opened
+2025-05-07 07:13:08,894 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:13:08,895 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 07:13:09,735 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:13:09,735 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 07:13:11,077 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:13:11,077 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 07:13:11,078 ERROR :: Failed to load balances: API Error 40101: Authentication failure
+2025-05-07 07:13:11,078 INFO :: CryptoExchangeClient initialized in TESTNET mode
+2025-05-07 07:13:12,009 INFO :: Websocket connected
+2025-05-07 07:13:12,009 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:13:12,009 INFO :: WebSocket connection established
+2025-05-07 07:13:12,521 WARNING :: No valid ticker names found
+2025-05-07 07:14:29,592 WARNING :: Crypto.com WebSocket connection closed
+2025-05-07 07:14:29,593 INFO :: WebSocket connection closed
+2025-05-07 07:14:32,473 INFO :: Websocket connected
+2025-05-07 07:14:32,473 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:14:32,473 INFO :: WebSocket connection established
+2025-05-07 07:14:33,296 WARNING :: No valid ticker names found
+2025-05-07 07:15:59,587 WARNING :: Crypto.com WebSocket connection closed
+2025-05-07 07:15:59,587 INFO :: WebSocket connection closed
+2025-05-07 07:16:02,585 INFO :: Websocket connected
+2025-05-07 07:16:02,585 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:16:02,585 INFO :: WebSocket connection established
+2025-05-07 07:16:03,203 WARNING :: No valid ticker names found
+2025-05-07 07:17:22,140 WARNING :: Crypto.com WebSocket connection closed
+2025-05-07 07:17:22,140 INFO :: WebSocket connection closed
+2025-05-07 07:17:24,823 INFO :: Websocket connected
+2025-05-07 07:17:24,823 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:17:24,824 INFO :: WebSocket connection established
+2025-05-07 07:17:25,242 WARNING :: No valid ticker names found
+2025-05-07 07:18:42,223 WARNING :: Crypto.com WebSocket connection closed
+2025-05-07 07:18:42,224 INFO :: WebSocket connection closed
+2025-05-07 07:18:44,913 INFO :: Websocket connected
+2025-05-07 07:18:44,914 INFO :: Crypto.com WebSocket connection opened
+2025-05-07 07:18:44,914 INFO :: WebSocket connection established
+2025-05-07 07:18:45,313 WARNING :: No valid ticker names found
+2025-05-07 07:37:33,541 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 07:37:33,852 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 07:37:33,853 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 07:45:08,502 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 07:45:08,810 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 07:45:08,811 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 07:45:08,812 INFO :: Fetching account balances from Binance.US...
+2025-05-07 07:45:08,953 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 07:45:08,954 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 07:45:08,955 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 07:45:08,955 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 07:45:08,955 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:45:09,516 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:45:09,615 INFO :: Websocket connected
+2025-05-07 07:45:09,616 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 07:45:09,616 INFO :: Binance.US market data stream connected
+2025-05-07 07:45:09,616 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 07:45:09,617 INFO :: Subscription request sent for 575 contracts
+2025-05-07 07:45:09,754 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:45:09,754 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 07:45:10,699 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:45:10,699 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 07:45:11,991 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:45:11,991 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 07:45:11,991 ERROR :: Failed to load balances: API Error 40101: Authentication failure
+2025-05-07 07:45:11,992 INFO :: CryptoExchangeClient initialized in TESTNET mode
+2025-05-07 07:45:12,794 INFO :: Websocket connected
+2025-05-07 07:45:12,794 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:45:12,795 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:45:12,795 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:45:13,255 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:45:13,256 WARNING :: No valid ticker names found in instruments data
+2025-05-07 07:45:13,256 INFO :: Cannot subscribe to market data: Invalid instrument format
+2025-05-07 07:46:46,846 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 07:46:47,216 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 07:46:47,216 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 07:46:47,217 INFO :: Fetching account balances from Binance.US...
+2025-05-07 07:46:47,510 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 07:46:47,510 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 07:46:47,511 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 07:46:47,511 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 07:46:47,512 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:46:48,127 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:46:48,127 INFO :: Successfully loaded 0 trading contracts
+2025-05-07 07:46:48,128 INFO :: Fetching account balances from Crypto.com Exchange...
+2025-05-07 07:46:48,128 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:46:48,329 INFO :: Websocket connected
+2025-05-07 07:46:48,329 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 07:46:48,329 INFO :: Binance.US market data stream connected
+2025-05-07 07:46:48,329 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 07:46:48,330 INFO :: Subscription request sent for 575 contracts
+2025-05-07 07:46:48,534 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:46:48,534 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 07:46:49,035 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:46:49,368 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:46:49,368 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 07:46:50,369 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:46:50,670 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:46:50,670 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 07:46:50,671 ERROR :: Failed to fetch account balances: API Error 40101: Authentication failure
+2025-05-07 07:46:50,671 INFO :: Error fetching account balances: API Error 40101: Authentication failure
+2025-05-07 07:46:50,671 WARNING :: No non-zero balances found in account
+2025-05-07 07:46:50,672 INFO :: No account balances found
+2025-05-07 07:46:50,672 INFO :: Starting Crypto.com WebSocket connection to wss://uat-stream.3ona.co/exchange/v1/market...
+2025-05-07 07:46:50,672 INFO :: CryptoExchangeClient initialized in TESTNET (Sandbox) mode with API key: [PROVIDED]
+2025-05-07 07:46:51,503 INFO :: Websocket connected
+2025-05-07 07:46:51,503 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:46:51,503 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:46:51,504 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:46:52,020 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:46:52,020 WARNING :: No valid ticker names found in instruments data
+2025-05-07 07:46:52,021 INFO :: Cannot subscribe to market data: Invalid instrument format
+2025-05-07 07:47:52,228 WARNING :: Crypto.com WebSocket connection closed (Code: 1000)
+2025-05-07 07:47:52,228 INFO :: WebSocket connection closed (Code: 1000)
+2025-05-07 07:47:55,060 INFO :: Websocket connected
+2025-05-07 07:47:55,060 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:47:55,060 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:47:55,060 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:47:55,512 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:47:55,513 WARNING :: No valid ticker names found in instruments data
+2025-05-07 07:47:55,513 INFO :: Cannot subscribe to market data: Invalid instrument format
+2025-05-07 07:48:58,171 WARNING :: Crypto.com WebSocket connection closed (Code: 1000)
+2025-05-07 07:48:58,172 INFO :: WebSocket connection closed (Code: 1000)
+2025-05-07 07:49:00,940 INFO :: Websocket connected
+2025-05-07 07:49:00,941 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:49:00,941 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:49:00,941 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:49:01,367 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:49:01,368 WARNING :: No valid ticker names found in instruments data
+2025-05-07 07:49:01,368 INFO :: Cannot subscribe to market data: Invalid instrument format
+2025-05-07 07:50:05,615 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 07:50:05,974 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 07:50:05,974 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 07:50:05,975 INFO :: Fetching account balances from Binance.US...
+2025-05-07 07:50:06,140 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 07:50:06,141 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 07:50:06,142 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 07:50:06,142 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 07:50:06,142 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:50:06,551 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:50:06,551 INFO :: Successfully loaded 0 trading contracts
+2025-05-07 07:50:06,552 INFO :: Fetching account balances from Crypto.com Exchange...
+2025-05-07 07:50:06,552 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:50:06,703 INFO :: Websocket connected
+2025-05-07 07:50:06,703 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 07:50:06,704 INFO :: Binance.US market data stream connected
+2025-05-07 07:50:06,704 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 07:50:06,705 INFO :: Subscription request sent for 575 contracts
+2025-05-07 07:50:06,784 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:50:06,784 WARNING :: API Auth error code 40101, retrying (1/3)...
+2025-05-07 07:50:07,285 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:50:07,612 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:50:07,612 WARNING :: API Auth error code 40101, retrying (2/3)...
+2025-05-07 07:50:08,613 INFO :: Sending private/user-balance request to https://uat-api.3ona.co/exchange/v1/private/user-balance
+2025-05-07 07:50:09,069 ERROR :: API Error: Code 40101, Message: 'Authentication failure'
+2025-05-07 07:50:09,069 ERROR :: RPC call for method 'private/user-balance' failed: API Error 40101: Authentication failure
+2025-05-07 07:50:09,069 ERROR :: Failed to fetch account balances: API Error 40101: Authentication failure
+2025-05-07 07:50:09,070 INFO :: Error fetching account balances: API Error 40101: Authentication failure
+2025-05-07 07:50:09,070 WARNING :: No non-zero balances found in account
+2025-05-07 07:50:09,070 INFO :: No account balances found
+2025-05-07 07:50:09,071 INFO :: Starting Crypto.com WebSocket connection to wss://uat-stream.3ona.co/exchange/v1/market...
+2025-05-07 07:50:09,071 INFO :: CryptoExchangeClient initialized in TESTNET (Sandbox) mode with API key: [PROVIDED]
+2025-05-07 07:50:10,083 INFO :: Websocket connected
+2025-05-07 07:50:10,084 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:50:10,084 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:50:10,084 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:50:10,543 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:50:10,543 INFO :: Sample instrument format: dict_keys(['symbol', 'inst_type', 'display_name', 'base_ccy', 'quote_ccy', 'quote_decimals', 'quantity_decimals', 'price_tick_size', 'qty_tick_size', 'max_leverage', 'tradable', 'expiry_timestamp_ms', 'beta_product', 'underlying_symbol', 'contract_size', 'margin_buy_enabled', 'margin_sell_enabled'])
+2025-05-07 07:50:10,544 INFO :: Subscribing to 939 instrument tickers (valid: 939, invalid: 0)
+2025-05-07 07:50:10,544 INFO :: Subscribing to market data for 939 instruments
+2025-05-07 07:50:20,056 INFO :: Successfully sent 19 subscription chunks for 939 instruments
+2025-05-07 07:50:20,057 INFO :: Market data subscription complete
+2025-05-07 07:51:20,199 WARNING :: Crypto.com WebSocket connection closed (Code: 1000)
+2025-05-07 07:51:20,199 INFO :: WebSocket connection closed (Code: 1000)
+2025-05-07 07:51:22,965 INFO :: Websocket connected
+2025-05-07 07:51:22,965 INFO :: Crypto.com Sandbox WebSocket connection established successfully
+2025-05-07 07:51:22,965 INFO :: Sandbox WebSocket connection established
+2025-05-07 07:51:22,965 INFO :: Fetching instruments from https://uat-api.3ona.co/exchange/v1/public/get-instruments
+2025-05-07 07:51:23,437 INFO :: Successfully retrieved 939 instruments
+2025-05-07 07:51:23,438 INFO :: Sample instrument format: dict_keys(['symbol', 'inst_type', 'display_name', 'base_ccy', 'quote_ccy', 'quote_decimals', 'quantity_decimals', 'price_tick_size', 'qty_tick_size', 'max_leverage', 'tradable', 'expiry_timestamp_ms', 'beta_product', 'underlying_symbol', 'contract_size', 'margin_buy_enabled', 'margin_sell_enabled'])
+2025-05-07 07:51:23,439 INFO :: Subscribing to 939 instrument tickers (valid: 939, invalid: 0)
+2025-05-07 07:51:23,439 INFO :: Subscribing to market data for 939 instruments
+2025-05-07 07:51:32,949 INFO :: Successfully sent 19 subscription chunks for 939 instruments
+2025-05-07 07:51:32,950 INFO :: Market data subscription complete

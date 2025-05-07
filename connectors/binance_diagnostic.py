@@ -41,7 +41,7 @@ def main():
 
     try:
         client = BinanceClient()
-        logger.info("✅ BinanceClient instantiated successfully")
+        logger.info("BinanceClient instantiated successfully")
     except Exception as e:
         logger.error(f"❌ Failed to initialize BinanceClient: {e}")
         logger.debug(traceback.format_exc())
