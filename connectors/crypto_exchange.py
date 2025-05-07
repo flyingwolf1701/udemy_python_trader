@@ -25,15 +25,10 @@ class CryptoExchangeClient:
     MAX_RETRIES = 3
 
     def __init__(self, base_url: str = BASE_URL):
-        try:
-            # It's good practice to load into temporary variables first if using a generic Secrets object
-            loaded_api_key = Secrets.CRYPTO_API_KEY
-            loaded_api_secret = Secrets.CRYPTO_API_SECRET 
-        except AttributeError as e:
-            logger.critical(f"CRITICAL FAILURE: Could not retrieve API key/secret from the Secrets module. Error: {e}")
-            logger.critical("Ensure CRYPTO_API_KEY and CRYPTO_API_SECRET are correctly defined in your secret_keys.py (or the .env file it reads from).")
-            raise ValueError("Failed to load API credentials from Secrets module.") from e
-
+        self.api_key = Secrets.CRYPTO_API_KEY
+        self.api_secret = Secrets.CRYPTO_API_SECRET.encode('utf-8') # Ensure utf-8 encoding
+        self.base_url = base_url.rstrip("/")
+        self.time_offset = 0  # No server time sync needed for Exchange v1 (Verify this)
 
     def _get_nonce(self) -> int:
         """Generate nonce using local time in milliseconds"""
