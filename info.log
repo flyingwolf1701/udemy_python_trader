@@ -285,3 +285,217 @@
 2025-05-07 12:50:05,223 INFO :: Websocket connected
 2025-05-07 12:50:05,224 INFO :: WS connected
 2025-05-07 12:51:08,162 INFO :: WS closed: 1000
+2025-05-07 19:16:04,807 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 19:16:05,048 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 19:16:05,048 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 19:16:05,049 INFO :: Fetching account balances from Binance.US...
+2025-05-07 19:16:05,177 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 19:16:05,177 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 19:16:05,178 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 19:16:05,179 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 19:16:05,179 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 19:16:05,618 INFO :: Fetched 851 instruments.
+2025-05-07 19:16:05,620 INFO :: Loaded 851 trading contracts.
+2025-05-07 19:16:05,621 DEBUG :: Signature base string: private/user-balance1746666965621xmBNKBrsqtus3DAeWuoeb81746666965621
+2025-05-07 19:16:05,621 DEBUG :: Computed signature: d0e6be8916ec238af035925e410b00d547bd71af01cdf4d88ba41a6682d6375f
+2025-05-07 19:16:05,621 DEBUG :: RPC payload for private/user-balance: {"id": 1746666965621, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746666965621, "sig": "d0e6be8916ec238af035925e410b00d547bd71af01cdf4d88ba41a6682d6375f"}
+2025-05-07 19:16:05,704 INFO :: Websocket connected
+2025-05-07 19:16:05,704 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 19:16:05,704 INFO :: Binance.US market data stream connected
+2025-05-07 19:16:05,705 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 19:16:05,705 INFO :: Subscription request sent for 575 contracts
+2025-05-07 19:16:05,826 DEBUG :: RPC response for private/user-balance: {"id": 1746666965621, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 19:16:05,827 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 19:16:05,827 INFO :: Fetched 1 account balances.
+2025-05-07 19:16:05,827 INFO :: Loaded 1 account balances.
+2025-05-07 19:16:05,827 INFO :: CryptoExchangeClient initialized.
+2025-05-07 19:16:32,892 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 19:16:33,015 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 19:16:33,015 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 19:16:33,016 INFO :: Fetching account balances from Binance.US...
+2025-05-07 19:16:33,168 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 19:16:33,168 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 19:16:33,169 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 19:16:33,169 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 19:16:33,170 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 19:16:33,420 INFO :: Fetched 851 instruments.
+2025-05-07 19:16:33,422 INFO :: Loaded 851 trading contracts.
+2025-05-07 19:16:33,423 DEBUG :: Signature base string: private/user-balance1746666993423xmBNKBrsqtus3DAeWuoeb81746666993423
+2025-05-07 19:16:33,423 DEBUG :: Computed signature: 5ddbdf5188f1fb2bcac520181cb4ad9b6741e2e90d1a49acd0dd0c9edb9a1b6b
+2025-05-07 19:16:33,423 DEBUG :: RPC payload for private/user-balance: {"id": 1746666993423, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746666993423, "sig": "5ddbdf5188f1fb2bcac520181cb4ad9b6741e2e90d1a49acd0dd0c9edb9a1b6b"}
+2025-05-07 19:16:33,622 DEBUG :: RPC response for private/user-balance: {"id": 1746666993423, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 19:16:33,622 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 19:16:33,622 INFO :: Fetched 1 account balances.
+2025-05-07 19:16:33,622 INFO :: Loaded 1 account balances.
+2025-05-07 19:16:33,623 INFO :: CryptoExchangeClient initialized.
+2025-05-07 21:52:38,364 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 21:52:38,562 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 21:52:38,562 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 21:52:38,564 INFO :: Fetching account balances from Binance.US...
+2025-05-07 21:52:38,624 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 21:52:38,624 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 21:52:38,626 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 21:52:38,626 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 21:52:38,627 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 21:52:39,005 INFO :: Fetched 851 instruments.
+2025-05-07 21:52:39,010 INFO :: Loaded 851 trading contracts.
+2025-05-07 21:52:39,011 DEBUG :: Signature base string: private/user-balance1746676359011xmBNKBrsqtus3DAeWuoeb81746676359011
+2025-05-07 21:52:39,011 DEBUG :: Computed signature: 7cf8510e247f7bed453ef4d721214f26cff99a7c3f410cf921f303c995f0f573
+2025-05-07 21:52:39,011 DEBUG :: RPC payload for private/user-balance: {"id": 1746676359011, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746676359011, "sig": "7cf8510e247f7bed453ef4d721214f26cff99a7c3f410cf921f303c995f0f573"}
+2025-05-07 21:52:39,257 DEBUG :: RPC response for private/user-balance: {"id": 1746676359011, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 21:52:39,257 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 21:52:39,257 INFO :: Fetched 1 account balances.
+2025-05-07 21:52:39,258 INFO :: Loaded 1 account balances.
+2025-05-07 21:52:39,258 INFO :: CryptoExchangeClient initialized.
+2025-05-07 21:52:39,403 INFO :: Websocket connected
+2025-05-07 21:52:39,404 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 21:52:39,404 INFO :: Binance.US market data stream connected
+2025-05-07 21:52:39,405 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 21:52:39,406 INFO :: Subscription request sent for 575 contracts
+2025-05-07 21:52:41,761 INFO :: Websocket connected
+2025-05-07 21:52:41,761 INFO :: WS connected
+2025-05-07 21:54:08,015 INFO :: WS closed: 1000
+2025-05-07 21:57:24,797 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 21:57:25,073 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 21:57:25,074 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 21:57:25,075 INFO :: Fetching account balances from Binance.US...
+2025-05-07 21:57:25,231 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 21:57:25,231 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 21:57:25,233 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 21:57:25,233 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 21:57:25,233 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 21:57:25,995 INFO :: Fetched 851 instruments.
+2025-05-07 21:57:26,007 INFO :: Loaded 851 trading contracts.
+2025-05-07 21:57:26,008 DEBUG :: Signature base string: private/user-balance1746676646007xmBNKBrsqtus3DAeWuoeb81746676646007
+2025-05-07 21:57:26,008 DEBUG :: Computed signature: 39041268f566b9e36f7acbee1846381c67a19542e4a3176b148018139af616b0
+2025-05-07 21:57:26,008 DEBUG :: RPC payload for private/user-balance: {"id": 1746676646007, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746676646007, "sig": "39041268f566b9e36f7acbee1846381c67a19542e4a3176b148018139af616b0"}
+2025-05-07 21:57:26,197 DEBUG :: RPC response for private/user-balance: {"id": 1746676646007, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 21:57:26,197 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 21:57:26,197 INFO :: Fetched 1 account balances.
+2025-05-07 21:57:26,197 INFO :: Loaded 1 account balances.
+2025-05-07 21:57:26,198 INFO :: CryptoExchangeClient initialized.
+2025-05-07 21:57:26,321 INFO :: Websocket connected
+2025-05-07 21:57:26,321 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 21:57:26,322 INFO :: Binance.US market data stream connected
+2025-05-07 21:57:26,322 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 21:57:26,323 INFO :: Subscription request sent for 575 contracts
+2025-05-07 21:57:27,039 INFO :: Websocket connected
+2025-05-07 21:57:27,039 INFO :: WS connected
+2025-05-07 21:58:38,803 INFO :: WS closed: 1000
+2025-05-07 22:23:07,895 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 22:23:08,134 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 22:23:08,135 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 22:23:08,136 INFO :: Fetching account balances from Binance.US...
+2025-05-07 22:23:08,267 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 22:23:08,267 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 22:23:08,269 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 22:23:08,269 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 22:23:08,270 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 22:23:08,786 INFO :: Websocket connected
+2025-05-07 22:23:08,787 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 22:23:08,787 INFO :: Binance.US market data stream connected
+2025-05-07 22:23:08,787 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 22:23:08,788 INFO :: Subscription request sent for 575 contracts
+2025-05-07 22:23:08,886 INFO :: Fetched 851 instruments.
+2025-05-07 22:23:08,890 INFO :: Loaded 851 trading contracts.
+2025-05-07 22:23:08,891 DEBUG :: Signature base string: private/user-balance1746678188891xmBNKBrsqtus3DAeWuoeb81746678188891
+2025-05-07 22:23:08,891 DEBUG :: Computed signature: e553a7457ad18edd2ae3f4cb1c5987b06739fa7bff00f4d520442d7fcd67f5fb
+2025-05-07 22:23:08,891 DEBUG :: RPC payload for private/user-balance: {"id": 1746678188891, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746678188891, "sig": "e553a7457ad18edd2ae3f4cb1c5987b06739fa7bff00f4d520442d7fcd67f5fb"}
+2025-05-07 22:23:09,107 DEBUG :: RPC response for private/user-balance: {"id": 1746678188891, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 22:23:09,107 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 22:23:09,107 INFO :: Fetched 1 account balances.
+2025-05-07 22:23:09,107 INFO :: Loaded 1 account balances.
+2025-05-07 22:23:09,108 INFO :: CryptoExchangeClient initialized.
+2025-05-07 23:03:13,368 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 23:03:13,875 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 23:03:13,875 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 23:03:13,876 INFO :: Fetching account balances from Binance.US...
+2025-05-07 23:03:14,006 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 23:03:14,006 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 23:03:14,007 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 23:03:14,008 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 23:03:14,008 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 23:03:14,671 INFO :: Websocket connected
+2025-05-07 23:03:14,671 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 23:03:14,671 INFO :: Binance.US market data stream connected
+2025-05-07 23:03:14,672 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 23:03:14,673 INFO :: Subscription request sent for 575 contracts
+2025-05-07 23:03:15,840 INFO :: Fetched 851 instruments.
+2025-05-07 23:03:15,845 INFO :: Loaded 851 trading contracts.
+2025-05-07 23:03:15,845 DEBUG :: Signature base string: private/user-balance1746680595845xmBNKBrsqtus3DAeWuoeb81746680595845
+2025-05-07 23:03:15,845 DEBUG :: Computed signature: 568d27799cb5ddccab10e098b2c04251d92b3a0aab2420c90e48e8022b98e05a
+2025-05-07 23:03:15,846 DEBUG :: RPC payload for private/user-balance: {"id": 1746680595845, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746680595845, "sig": "568d27799cb5ddccab10e098b2c04251d92b3a0aab2420c90e48e8022b98e05a"}
+2025-05-07 23:03:16,019 DEBUG :: RPC response for private/user-balance: {"id": 1746680595845, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 23:03:16,020 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 23:03:16,020 INFO :: Fetched 1 account balances.
+2025-05-07 23:03:16,020 INFO :: Loaded 1 account balances.
+2025-05-07 23:03:16,021 INFO :: CryptoExchangeClient initialized.
+2025-05-07 23:07:51,413 INFO :: Fetching available trading pairs from Binance.US...
+2025-05-07 23:07:51,782 INFO :: Successfully loaded 575 trading pairs from Binance.US
+2025-05-07 23:07:51,782 INFO :: Loaded 575 Binance.US trading pairs
+2025-05-07 23:07:51,784 INFO :: Fetching account balances from Binance.US...
+2025-05-07 23:07:51,979 INFO :: Successfully loaded 1 non-zero balances from Binance.US
+2025-05-07 23:07:51,980 INFO :: Loaded 1 non-zero balances from Binance.US
+2025-05-07 23:07:51,982 INFO :: Starting Binance.US WebSocket connection...
+2025-05-07 23:07:51,982 INFO :: BinanceClient initialized successfully with API key: [PROVIDED]
+2025-05-07 23:07:51,983 INFO :: API credentials loaded from environment; private endpoints enabled.
+2025-05-07 23:07:52,507 INFO :: Fetched 851 instruments.
+2025-05-07 23:07:52,512 INFO :: Loaded 851 trading contracts.
+2025-05-07 23:07:52,513 DEBUG :: Signature base string: private/user-balance1746680872513xmBNKBrsqtus3DAeWuoeb81746680872513
+2025-05-07 23:07:52,513 DEBUG :: Computed signature: b6cf11cd591ed9b695d46fbd8e0b90578384ece3315858aed1cf6ffda020c38d
+2025-05-07 23:07:52,513 DEBUG :: RPC payload for private/user-balance: {"id": 1746680872513, "method": "private/user-balance", "api_key": "xmBNKBrsqtus3DAeWuoeb8", "params": {}, "nonce": 1746680872513, "sig": "b6cf11cd591ed9b695d46fbd8e0b90578384ece3315858aed1cf6ffda020c38d"}
+2025-05-07 23:07:52,790 INFO :: Websocket connected
+2025-05-07 23:07:52,791 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 23:07:52,791 INFO :: Binance.US market data stream connected
+2025-05-07 23:07:52,791 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 23:07:52,793 INFO :: Subscription request sent for 575 contracts
+2025-05-07 23:07:52,868 DEBUG :: RPC response for private/user-balance: {"id": 1746680872513, "method": "private/user-balance", "code": 0, "result": {"data": [{"total_available_balance": "0", "total_margin_balance": "0", "total_initial_margin": "0.00000000", "total_haircut": "0.00000000", "total_position_im": "0", "total_maintenance_margin": "0", "total_position_cost": "0", "total_cash_balance": "0", "total_session_unrealized_pnl": "0", "instrument_name": "USD", "total_session_realized_pnl": "0", "position_balances": [], "credit_limits": [], "total_effective_leverage": "0", "position_limit": "0", "used_position_limit": "0", "total_borrow": "0", "margin_score": "0", "is_liquidating": false, "has_risk": false, "terminatable": true}]}}
+2025-05-07 23:07:52,868 DEBUG :: Raw account summary result: {'data': [{'total_available_balance': '0', 'total_margin_balance': '0', 'total_initial_margin': '0.00000000', 'total_haircut': '0.00000000', 'total_position_im': '0', 'total_maintenance_margin': '0', 'total_position_cost': '0', 'total_cash_balance': '0', 'total_session_unrealized_pnl': '0', 'instrument_name': 'USD', 'total_session_realized_pnl': '0', 'position_balances': [], 'credit_limits': [], 'total_effective_leverage': '0', 'position_limit': '0', 'used_position_limit': '0', 'total_borrow': '0', 'margin_score': '0', 'is_liquidating': False, 'has_risk': False, 'terminatable': True}]}
+2025-05-07 23:07:52,868 INFO :: Fetched 1 account balances.
+2025-05-07 23:07:52,869 INFO :: Loaded 1 account balances.
+2025-05-07 23:07:52,869 INFO :: CryptoExchangeClient initialized.
+2025-05-07 23:07:54,328 INFO :: Websocket connected
+2025-05-07 23:07:54,328 INFO :: WS connected
+2025-05-07 23:09:15,754 INFO :: WS closed: 1000
+2025-05-07 23:28:23,434 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-07 23:28:23,434 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-07 23:28:26,304 INFO :: Websocket connected
+2025-05-07 23:28:26,304 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 23:28:26,304 INFO :: Binance.US market data stream connected
+2025-05-07 23:28:26,305 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 23:28:26,306 INFO :: Subscription request sent for 575 contracts
+2025-05-07 23:40:36,751 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-07 23:40:36,752 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-07 23:40:39,442 INFO :: Websocket connected
+2025-05-07 23:40:39,442 INFO :: Binance.US WebSocket connection established successfully
+2025-05-07 23:40:39,442 INFO :: Binance.US market data stream connected
+2025-05-07 23:40:39,443 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-07 23:40:39,444 INFO :: Subscription request sent for 575 contracts
+2025-05-08 00:01:26,103 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-08 00:01:26,103 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-08 00:01:28,809 INFO :: Websocket connected
+2025-05-08 00:01:28,810 INFO :: Binance.US WebSocket connection established successfully
+2025-05-08 00:01:28,810 INFO :: Binance.US market data stream connected
+2025-05-08 00:01:28,810 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-08 00:01:28,812 INFO :: Subscription request sent for 575 contracts
+2025-05-08 00:20:39,128 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-08 00:20:39,129 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-08 00:20:41,661 INFO :: Websocket connected
+2025-05-08 00:20:41,662 INFO :: Binance.US WebSocket connection established successfully
+2025-05-08 00:20:41,662 INFO :: Binance.US market data stream connected
+2025-05-08 00:20:41,663 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-08 00:20:41,664 INFO :: Subscription request sent for 575 contracts
+2025-05-08 00:42:43,673 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-08 00:42:43,674 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-08 00:42:46,443 INFO :: Websocket connected
+2025-05-08 00:42:46,443 INFO :: Binance.US WebSocket connection established successfully
+2025-05-08 00:42:46,443 INFO :: Binance.US market data stream connected
+2025-05-08 00:42:46,444 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-08 00:42:46,445 INFO :: Subscription request sent for 575 contracts
+2025-05-08 01:03:41,761 WARNING :: Binance.US WebSocket connection closed (Code: 1008)
+2025-05-08 01:03:41,762 INFO :: Binance.US market data stream disconnected (Code: 1008)
+2025-05-08 01:03:44,339 INFO :: Websocket connected
+2025-05-08 01:03:44,340 INFO :: Binance.US WebSocket connection established successfully
+2025-05-08 01:03:44,340 INFO :: Binance.US market data stream connected
+2025-05-08 01:03:44,341 INFO :: Subscribing to bookTicker for 575 contracts...
+2025-05-08 01:03:44,342 INFO :: Subscription request sent for 575 contracts
