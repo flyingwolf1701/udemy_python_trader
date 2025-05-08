@@ -86,13 +86,13 @@ def assert_non_empty(name, data):
     return True, ""
 
 
-def test_sequence(client, label):
+def test_sequence(client):
     # Fetch instruments
     def fetch_and_check_instruments():
         inst = client.get_instruments()
-        ok, m = assert_non_empty(f"Fetch instruments ({label})", inst)
+        ok, m = assert_non_empty("Fetch instruments", inst)
         return (inst if ok else None) or (False, m)
-    instruments = run_test(f"Fetch instruments ({label})", fetch_and_check_instruments)
+    instruments = run_test("Fetch instruments", fetch_and_check_instruments)
 
     # Determine instrument symbol
     selected = TEST_INSTRUMENT
@@ -103,23 +103,23 @@ def test_sequence(client, label):
     # Account summary
     def check_account_summary():
         summary = client.get_account_summary()
-        ok, m = assert_non_empty(f"Account summary ({label})", summary)
+        ok, m = assert_non_empty("Account summary", summary)
         return (summary if ok else None) or (False, m)
-    run_test(f"Account summary ({label})", check_account_summary)
+    run_test("Account summary", check_account_summary)
 
     # Order book
     def check_order_book():
         ob = client.get_order_book(selected)
-        ok, m = assert_non_empty(f"Order book for {selected} ({label})", ob.get("bids") or ob.get("asks"))
+        ok, m = assert_non_empty(f"Order book for {selected}", ob.get("bids") or ob.get("asks"))
         return (ob if ok else None) or (False, m)
-    run_test(f"Order book ({label})", check_order_book)
+    run_test("Order book", check_order_book)
 
     # Recent trades
     def check_recent_trades():
         trades = client.get_trades(selected)
-        ok, m = assert_non_empty(f"Recent trades for {selected} ({label})", trades)
+        ok, m = assert_non_empty(f"Recent trades for {selected}", trades)
         return (trades if ok else None) or (False, m)
-    run_test(f"Recent trades ({label})", check_recent_trades)
+    run_test("Recent trades", check_recent_trades)
 
 
 def main():
@@ -132,16 +132,14 @@ def main():
         logger.info("✅ All Crypto API environment variables are set.")
         test_results.append(("Environment variables", True, ""))
 
-    # Test live (prod) and sandbox (testnet)
-    for mode, ignore in [("PROD", False), ("TESTNET", True)]:
-        label = mode.lower()
-        client = run_test(
-            f"Initialize crypto client ({mode})",
-            lambda: CryptoExchangeClient(testnet=(mode == "TESTNET")),
-            ignore_warnings=ignore
-        )
-        if client:
-            test_sequence(client, label)
+    # Initialize client
+    client = run_test(
+        "Initialize crypto client",
+        lambda: CryptoExchangeClient()
+    )
+    
+    if client:
+        test_sequence(client)
 
     # Summary
     total = len(test_results)

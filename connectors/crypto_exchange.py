@@ -20,17 +20,11 @@ class CryptoExchangeClient:
     Simplified Crypto.com Exchange v1 API client with clear structure,
     using requests.Session, concise signature logic, and unified error handling.
     """
-    PROD_REST_URL = "https://api.crypto.com/exchange/v1"
-    TESTNET_REST_URL = "https://uat-api.3ona.co/exchange/v1"
-    PROD_WS_MARKET = "wss://stream.crypto.com/exchange/v1/market"
-    TESTNET_WS_MARKET = "wss://uat-stream.3ona.co/exchange/v1/market"
-    PROD_WS_USER = "wss://stream.crypto.com/exchange/v1/user"
-    TESTNET_WS_USER = "wss://uat-stream.3ona.co/exchange/v1/user"
+    REST_URL = "https://api.crypto.com/exchange/v1"
+    WS_MARKET = "wss://stream.crypto.com/exchange/v1/market"
+    WS_USER = "wss://stream.crypto.com/exchange/v1/user"
 
-    def __init__(
-        self,
-        testnet: bool = False,
-    ):
+    def __init__(self):
         # Load credentials exclusively from environment
         self.api_key = Secrets.CRYPTO_API_KEY
         self.api_secret = Secrets.CRYPTO_API_SECRET
@@ -40,10 +34,9 @@ class CryptoExchangeClient:
             )
         logger.info("API credentials loaded from environment; private endpoints enabled.")
 
-        self.testnet = testnet
-        self.base_url = self.TESTNET_REST_URL if testnet else self.PROD_REST_URL
-        self.ws_market_url = self.TESTNET_WS_MARKET if testnet else self.PROD_WS_MARKET
-        self.ws_user_url = self.TESTNET_WS_USER if testnet else self.PROD_WS_USER
+        self.base_url = self.REST_URL
+        self.ws_market_url = self.WS_MARKET
+        self.ws_user_url = self.WS_USER
 
         self.session = requests.Session()
         self.contracts: Dict[str, Contract] = {}
@@ -53,7 +46,7 @@ class CryptoExchangeClient:
 
         self._initialize_data()
         threading.Thread(target=self._start_ws, daemon=True).start()
-        logger.info(f"CryptoExchangeClient initialized ({'TESTNET' if testnet else 'PROD'}).")
+        logger.info("CryptoExchangeClient initialized.")
 
     def _add_log(self, msg: str):
         logger.info(msg)
