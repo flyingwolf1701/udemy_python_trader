@@ -218,9 +218,14 @@ class CryptoExchangeClient:
 
     def _load_balances(self) -> Dict[str, Balance]:
         entries = self.get_account_summary()
-        balances = {e["currency"]: Balance.from_info(e, "crypto") for e in entries}
+        balances = {}
+        for e in entries:
+            key = e.get("currency") or e.get("instrument_name")
+            if key:
+                balances[key] = Balance.from_info(e, "crypto")
         self._add_log(f"Loaded {len(balances)} account balances.")
         return balances
+
 
     def create_order(
         self,
