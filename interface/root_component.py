@@ -1,16 +1,12 @@
-"""
-Main application window for the Trading Bot with professional dark-themed UI.
-"""
-
 import tkinter as tk
-from tkinter import ttk
-
+from tkinter.messagebox import askquestion
 import logging
+import json
 
 from connectors.crypto_exchange import CryptoExchangeClient
 from connectors.binance_exchange import BinanceExchangeClient
 
-from interface.styling import ThemeManager, FrameStyles, Spacing
+from interface.styling import *
 from interface.logging_component import Logging
 from interface.watchlist_component import Watchlist
 from interface.trades_component import TradesWatch
@@ -21,163 +17,135 @@ logger = logging.getLogger()
 
 
 class Root(tk.Tk):
-    """
-    Main application window with a professional, dark-themed trading interface.
-    """
     def __init__(self, binance: BinanceExchangeClient, crypto: CryptoExchangeClient):
         super().__init__()
 
         self.binance = binance
         self.crypto = crypto
 
-        self.title("CryptoTrader Pro")
-        self.configure(bg=ThemeManager.get_color("background_primary"))
-        self.geometry("1280x800")  # Set initial window size
-        self.minsize(1000, 700)    # Set minimum window size
+        self.title("Trading Bot")
+        self.protocol("WM_DELETE_WINDOW", self._ask_before_close)
 
-        # Create a style for ttk widgets
-        self.style = ttk.Style()
-        self.style.theme_use("clam")  # Use a modern base theme
-        
-        # Configure the style based on our theme
-        self._configure_ttk_styles()
+        self.configure(bg=BG_COLOR)
 
-        # Create main layout frames
-        self._create_layout()
+        # Create the menu, sub menu and menu commands
+        self.main_menu = tk.Menu(self)
+        self.configure(menu=self.main_menu)
 
-        # Initialize UI components
-        self._initialize_components()
+        self.workspace_menu = tk.Menu(self.main_menu, tearoff=False)
+        self.main_menu.add_cascade(label="Workspace", menu=self.workspace_menu)
+        self.workspace_menu.add_command(label="Save workspace", command=self._save_workspace)
 
-        # Start the UI update cycle
-        self._update_ui()
+        # Separates the root component in two blocks
+        self._left_frame = tk.Frame(self, bg=BG_COLOR)
+        self._left_frame.pack(side=tk.LEFT)
 
-    def _configure_ttk_styles(self):
-        """Configure ttk styles based on the current theme"""
-        palette = ThemeManager.get_current_palette()
-        
-        # Configure ttk styles to match our theme
-        self.style.configure("TFrame", 
-                             background=palette.background_primary)
-        
-        self.style.configure("TButton", 
-                             background=palette.accent_primary,
-                             foreground=palette.text_primary,
-                             borderwidth=0,
-                             focusthickness=0,
-                             focuscolor=palette.accent_primary)
-        
-        self.style.map("TButton",
-                       background=[("active", palette.accent_secondary)],
-                       foreground=[("active", palette.text_primary)])
-        
-        # Separator style
-        self.style.configure("TSeparator", 
-                             background=palette.border)
-        
-        # Header separator style - more visible
-        self.style.configure("Header.TSeparator", 
-                             background=palette.border)
-        
-        # Paned window style - no visible handle
-        self.style.configure("TPanedwindow", 
-                             background=palette.background_primary)
-        
-        # Scrollbar style - subtle and modern
-        self.style.configure("TScrollbar", 
-                             background=palette.background_tertiary,
-                             troughcolor=palette.background_primary,
-                             borderwidth=0,
-                             arrowsize=13)
-        
-        # Combobox style - match input style
-        self.style.configure("TCombobox",
-                             background=palette.input_background,
-                             foreground=palette.input_text,
-                             fieldbackground=palette.input_background,
-                             borderwidth=1)
-        
-        self.style.map("TCombobox",
-                      fieldbackground=[("readonly", palette.input_background)],
-                      selectbackground=[("readonly", palette.accent_primary)],
-                      selectforeground=[("readonly", palette.text_primary)])
+        self._right_frame = tk.Frame(self, bg=BG_COLOR)
+        self._right_frame.pack(side=tk.LEFT)
 
-    def _create_layout(self):
-        """Create the main application layout"""
-        # Remove all padding to match the screenshot exactly
-        self.main_paned = ttk.PanedWindow(self, orient=tk.HORIZONTAL, style="TPanedwindow")
-        self.main_paned.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
-        
-        # Left panel - strategy and trades (main working area, wider)
-        self._left_frame = ttk.Frame(self.main_paned)
-        
-        # Right panel - watchlist and logging (sidebar, narrower)
-        self._right_frame = ttk.Frame(self.main_paned)
-        
-        # Add panels to the paned window with appropriate weights
-        self.main_paned.add(self._left_frame, weight=7)  # Much wider
-        self.main_paned.add(self._right_frame, weight=3)  # Narrower
-
-    def _initialize_components(self):
-        """Initialize and place all UI components"""
-        bg_color = ThemeManager.get_color("background_primary")
-        
-        # Strategy Editor component (top left)
-        self._strategy_frame = StrategyEditor(
-            self, self.binance, self.crypto, self._left_frame
-        )
-        self._strategy_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(0, 1))
-        
-        # Trades Monitor component (bottom left)
-        self._trades_frame = TradesWatch(self._left_frame)
-        self._trades_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, pady=(1, 0))
-        
-        # Watchlist component (top right)
+        # Creates and places components
         self._watchlist_frame = Watchlist(
             self.binance.contracts,
             self.crypto.contracts,
-            self._right_frame
+            self._left_frame,
+            bg=BG_COLOR,
         )
-        self._watchlist_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(0, 1))
-        
-        # Logging component (bottom right)
-        self.logging_frame = Logging(self._right_frame)
-        self.logging_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, pady=(1, 0))
+        self._watchlist_frame.pack(side=tk.TOP, padx=10)
+
+        self.logging_frame = Logging(self._left_frame, bg=BG_COLOR)
+        self.logging_frame.pack(side=tk.TOP, pady=15)
+
+        self._strategy_frame = StrategyEditor(
+            self, self.binance, self.crypto, self._right_frame, bg=BG_COLOR
+        )
+        self._strategy_frame.pack(side=tk.TOP, pady=15)
+
+        self._trades_frame = TradesWatch(self._right_frame, bg=BG_COLOR)
+        self._trades_frame.pack(side=tk.TOP, pady=15)
+
+        self._update_ui()
+
+    def _ask_before_close(self):
+        """
+        Triggered when the user clicks on the Close button of the interface.
+        This lets you have control over what's happening just before closing the interface.
+        """
+        result = askquestion("Confirmation", "Do you really want to exit the application?")
+        if result == "yes":
+            # Clean up WebSocket connections if available
+            if hasattr(self.binance, '_ws') and self.binance._ws:
+                self.binance._ws.close()
+            if hasattr(self.crypto, '_ws') and self.crypto._ws:
+                self.crypto._ws.close()
+                
+            self.destroy()
 
     def _update_ui(self):
-        """Update UI components with latest data"""
-        # Process logs
-        self._update_logs()
-        
-        # Update watchlist prices
-        self._update_watchlist()
-        
-        # Schedule next update
-        self.after(1000, self._update_ui)
-
-    def _update_logs(self):
-        """Update logging component with new logs"""
-        # Process Crypto exchange logs
+        """
+        Updates the UI components every 1500ms. Thread-safe method to update Tkinter elements.
+        """
+        # Logs
         for log in self.crypto.logs:
             if not log["displayed"]:
                 self.logging_frame.add_log(log["log"])
                 log["displayed"] = True
 
-        # Process Binance exchange logs
         for log in self.binance.logs:
             if not log["displayed"]:
                 self.logging_frame.add_log(log["log"])
                 log["displayed"] = True
 
-    def _update_watchlist(self):
-        """Update watchlist with latest price data"""
+        # Strategies and Trades (if implemented)
+        for client in [self.binance, self.crypto]:
+            try:
+                if hasattr(client, 'strategies'):
+                    for b_index, strat in client.strategies.items():
+                        for log in strat.logs:
+                            if not log['displayed']:
+                                self.logging_frame.add_log(log['log'])
+                                log['displayed'] = True
+                        
+                        # Update trades information
+                        for trade in strat.trades:
+                            if trade.time not in self._trades_frame.body_widgets['symbol']:
+                                self._trades_frame.add_trade(trade)
+                            
+                            if "binance" in trade.contract.exchange:
+                                precision = trade.contract.price_decimals
+                            else:
+                                precision = 8  # The Crypto PNL precision (adjust if needed)
+                            
+                            if hasattr(self._trades_frame.body_widgets, 'pnl_var') and trade.time in self._trades_frame.body_widgets['pnl_var']:
+                                pnl_str = "{0:.{prec}f}".format(trade.pnl, prec=precision)
+                                self._trades_frame.body_widgets['pnl_var'][trade.time].set(pnl_str)
+                                
+                            if hasattr(self._trades_frame.body_widgets, 'status_var') and trade.time in self._trades_frame.body_widgets['status_var']:
+                                self._trades_frame.body_widgets['status_var'][trade.time].set(trade.status.capitalize())
+                                
+                            if hasattr(self._trades_frame.body_widgets, 'quantity_var') and trade.time in self._trades_frame.body_widgets['quantity_var']:
+                                self._trades_frame.body_widgets['quantity_var'][trade.time].set(trade.quantity)
+            except RuntimeError as e:
+                logger.error("Error while looping through strategies dictionary: %s", e)
+            except AttributeError as e:
+                logger.error("Attribute error during strategy update: %s", e)
+
+        # Watchlist prices
         try:
-            for key, value in self._watchlist_frame.body_widgets["symbol"].items():
-                symbol = self._watchlist_frame.body_widgets["symbol"][key].cget("text")
-                exchange = self._watchlist_frame.body_widgets["exchange"][key].cget("text")
+            for key, value in self._watchlist_frame.body_widgets['symbol'].items():
+                symbol = self._watchlist_frame.body_widgets['symbol'][key].cget("text")
+                exchange = self._watchlist_frame.body_widgets['exchange'][key].cget("text")
 
                 if exchange == "Binance":
                     if symbol not in self.binance.contracts:
                         continue
+
+                    # Subscribe to symbol if needed and WebSocket is available
+                    if hasattr(self.binance, 'subscribe_channel'):
+                        ws_connected = getattr(self.binance, 'ws_connected', False)
+                        ws_subscriptions = getattr(self.binance, 'ws_subscriptions', {})
+                        
+                        if ws_connected and ws_subscriptions and symbol not in ws_subscriptions.get("bookTicker", []):
+                            self.binance.subscribe_channel([self.binance.contracts[symbol]], "bookTicker")
 
                     if symbol not in self.binance.prices:
                         self.binance.get_bid_ask(self.binance.contracts[symbol])
@@ -195,16 +163,71 @@ class Root(tk.Tk):
 
                     precision = self.crypto.contracts[symbol].price_decimals
                     prices = self.crypto.prices[symbol]
-
                 else:
                     continue
 
-                if prices["bid"] is not None:
-                    price_str = "{0:.{prec}f}".format(prices["bid"], prec=precision)
-                    self._watchlist_frame.body_widgets["bid_var"][key].set(price_str)
-                if prices["ask"] is not None:
-                    price_str = "{0:.{prec}f}".format(prices["ask"], prec=precision)
-                    self._watchlist_frame.body_widgets["ask_var"][key].set(price_str)
+                if prices.get('bid') is not None:
+                    price_str = "{0:.{prec}f}".format(prices['bid'], prec=precision)
+                    self._watchlist_frame.body_widgets['bid_var'][key].set(price_str)
+                    
+                if prices.get('ask') is not None:
+                    price_str = "{0:.{prec}f}".format(prices['ask'], prec=precision)
+                    self._watchlist_frame.body_widgets['ask_var'][key].set(price_str)
 
         except RuntimeError as e:
-            logger.error("Error while updating watchlist: %s", e)
+            logger.error("Error while looping through watchlist dictionary: %s", e)
+        except KeyError as e:
+            logger.error(f"Key error in watchlist update: {e}")
+
+        self.after(1500, self._update_ui)
+
+    def _save_workspace(self):
+        """
+        Saves the current workspace configuration.
+        """
+        # Watchlist
+        try:
+            watchlist_symbols = []
+            for key, value in self._watchlist_frame.body_widgets['symbol'].items():
+                symbol = value.cget("text")
+                exchange = self._watchlist_frame.body_widgets['exchange'][key].cget("text")
+                watchlist_symbols.append((symbol, exchange,))
+
+            if hasattr(self._watchlist_frame, 'db'):
+                self._watchlist_frame.db.save("watchlist", watchlist_symbols)
+        except Exception as e:
+            logger.error(f"Error saving watchlist: {e}")
+
+        # Strategies
+        try:
+            if hasattr(self._strategy_frame, 'body_widgets') and hasattr(self._strategy_frame, 'extra_params'):
+                strategies = []
+                strat_widgets = self._strategy_frame.body_widgets
+                
+                for b_index in strat_widgets.get('contract', {}):
+                    strategy_type = strat_widgets['strategy_type_var'][b_index].get()
+                    contract = strat_widgets['contract_var'][b_index].get()
+                    timeframe = strat_widgets['timeframe_var'][b_index].get()
+                    balance_pct = strat_widgets['balance_pct'][b_index].get()
+                    take_profit = strat_widgets['take_profit'][b_index].get()
+                    stop_loss = strat_widgets['stop_loss'][b_index].get()
+                    
+                    # Extra parameters
+                    extra_params = dict()
+                    if strategy_type in self._strategy_frame.extra_params:
+                        for param in self._strategy_frame.extra_params[strategy_type]:
+                            code_name = param['code_name']
+                            if hasattr(self._strategy_frame, 'additional_parameters') and b_index in self._strategy_frame.additional_parameters:
+                                extra_params[code_name] = self._strategy_frame.additional_parameters[b_index].get(code_name)
+                    
+                    strategies.append((
+                        strategy_type, contract, timeframe, balance_pct, 
+                        take_profit, stop_loss, json.dumps(extra_params),
+                    ))
+                
+                if hasattr(self._strategy_frame, 'db'):
+                    self._strategy_frame.db.save("strategies", strategies)
+        except Exception as e:
+            logger.error(f"Error saving strategies: {e}")
+
+        self.logging_frame.add_log("Workspace saved")

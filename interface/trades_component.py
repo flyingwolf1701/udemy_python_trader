@@ -1,306 +1,163 @@
-"""
-Professional trades monitor component with dark theme.
-Displays active and completed trades with status updates.
-"""
-
 import tkinter as tk
-from tkinter import ttk
 import typing
+import datetime
 
-from interface.styling import ThemeManager, Typography, Spacing
+from models import *
+
+from interface.styling import *
+from interface.scrollable_frame import ScrollableFrame
 
 
-class TradesWatch(ttk.Frame):
-    """
-    Modern component for monitoring active and historical trades.
-    """
+class TradesWatch(tk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-        # Initialize data structures
-        self.body_widgets = dict()
+
+        self.body_widgets = dict()  # Dictionary of dictionaries, contains all the references to the widgets in the table
+
         self._headers = ["time", "symbol", "exchange", "strategy", "side", "quantity", "status", "pnl"]
-        
-        # Create the UI
-        self._create_widgets()
-        
-    def _create_widgets(self):
-        """Create and arrange all UI widgets"""
-        palette = ThemeManager.get_current_palette()
-        
-        # Header frame with title
-        header_frame = ttk.Frame(self)
-        header_frame.pack(fill=tk.X)
-        
-        # Trade Monitor header
-        trades_label = tk.Label(
-            header_frame, 
-            text="Trade Monitor",
-            background=palette.background_primary,
-            foreground=palette.text_primary,
-            font=Typography.HEADING,
-            padx=Spacing.L,
-            pady=Spacing.S
-        )
-        trades_label.pack(anchor="w")
-        
-        # Create a separator below the header
-        separator = ttk.Separator(self, orient="horizontal", style="TSeparator")
-        separator.pack(fill=tk.X)
-        
-        # Table header frame
-        table_header_frame = ttk.Frame(self)
-        table_header_frame.pack(fill=tk.X, padx=Spacing.L, pady=(Spacing.S, 0))
-        
-        # Setup columns with appropriate weights
-        column_weights = [1, 2, 1, 2, 1, 1, 1, 1]  # Relative weights for each column
-        for i, weight in enumerate(column_weights):
-            table_header_frame.columnconfigure(i, weight=weight)
-        
-        # Define header labels with better text
-        headers = ["Time", "Symbol", "Exchange", "Strategy", "Side", "Quantity", "Status", "Pnl"]
-        for idx, h in enumerate(headers):
+
+        self._table_frame = tk.Frame(self, bg=BG_COLOR)
+        self._table_frame.pack(side=tk.TOP)
+
+        self._col_width = 12  # Fixed headers width to match the table body width
+
+        self._headers_frame = tk.Frame(self._table_frame, bg=BG_COLOR)
+
+        for idx, h in enumerate(self._headers):
             header = tk.Label(
-                table_header_frame,
-                text=h,
-                background=palette.background_primary,
-                foreground=palette.text_secondary,
-                font=Typography.BOLD,
-                anchor="w",
-                padx=Spacing.XS,
-                pady=Spacing.S
+                self._headers_frame, 
+                text=h.capitalize(), 
+                bg=BG_COLOR,
+                fg=FG_COLOR, 
+                font=GLOBAL_FONT, 
+                width=self._col_width
             )
-            header.grid(row=0, column=idx, sticky="ew")
-        
-        # Add a separator below headers
-        table_separator = ttk.Separator(self, orient="horizontal", style="TSeparator")
-        table_separator.pack(fill=tk.X, padx=Spacing.L)
-        
-        # Create a frame for the table content
-        self._table_frame = ttk.Frame(self)
-        self._table_frame.pack(fill=tk.BOTH, expand=True, padx=Spacing.L, pady=0)
-        
-        # Setup same column weights for the table content
-        for i, weight in enumerate(column_weights):
-            self._table_frame.columnconfigure(i, weight=weight)
-        
-        # Initialize storage for table cells
+            header.grid(row=0, column=idx)
+
+        # Additional header column to save some space for the scrollbar
+        header = tk.Label(
+            self._headers_frame, 
+            text="", 
+            bg=BG_COLOR,
+            fg=FG_COLOR, 
+            font=GLOBAL_FONT, 
+            width=2
+        )
+        header.grid(row=0, column=len(self._headers))
+
+        self._headers_frame.pack(side=tk.TOP, anchor="nw")
+
+        self._body_frame = ScrollableFrame(self, bg=BG_COLOR, height=250)
+        self._body_frame.pack(side=tk.TOP, anchor="nw", fill=tk.X)
+
         for h in self._headers:
             self.body_widgets[h] = dict()
-            if h in ["status", "pnl"]:
+            if h in ["status", "pnl", "quantity"]:
                 self.body_widgets[h + "_var"] = dict()
-        
-        # Start body index at 0
+
         self._body_index = 0
-        
-        # Empty state message
-        self._empty_label = tk.Label(
-            self._table_frame,
-            text="No trades to display",
-            background=palette.background_primary,
-            foreground=palette.text_secondary,
-            font=Typography.NORMAL,
-            pady=Spacing.XL
-        )
-        self._empty_label.grid(row=0, column=0, columnspan=len(self._headers))
-    
-    def add_trade(self, data: typing.Dict):
+
+    def add_trade(self, trade: Trade):
         """
-        Add a new trade to the trade monitor.
-        
-        Args:
-            data: Dictionary containing trade data with keys matching the headers
+        Add a new trade row.
+        :param trade: Trade object containing trade details
+        :return: None
         """
-        # Hide empty state label if visible
-        self._empty_label.grid_forget()
-        
-        # Get current row index and trade index
         b_index = self._body_index
-        t_index = data['time']
-        
-        # Get colors based on current theme
-        palette = ThemeManager.get_current_palette()
-        
-        # Determine text color for the side (buy/sell)
-        side_color = palette.chart_up if data['side'].upper() == "BUY" else palette.chart_down
-        
-        # Common label style for this row
-        row_bg = palette.background_primary
-        
-        # Time
+
+        t_index = trade.time  # This is the trade row identifier, Unix Timestamp in milliseconds, so should be unique.
+
+        # Format timestamp to human-readable date
+        dt_str = datetime.datetime.fromtimestamp(trade.time / 1000).strftime("%b %d %H:%M")
+
         self.body_widgets['time'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['time'],
-            background=row_bg,
-            foreground=palette.text_secondary,
-            font=Typography.NORMAL,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame, 
+            text=dt_str, 
+            bg=BG_COLOR,
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['time'][t_index].grid(row=b_index, column=0, sticky="ew")
-        
+        self.body_widgets['time'][t_index].grid(row=b_index, column=0)
+
         # Symbol
         self.body_widgets['symbol'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['symbol'],
-            background=row_bg,
-            foreground=palette.text_primary,
-            font=Typography.BOLD,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame, 
+            text=trade.contract.symbol,
+            bg=BG_COLOR, 
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT,
+            width=self._col_width
         )
-        self.body_widgets['symbol'][t_index].grid(row=b_index, column=1, sticky="ew")
-        
+        self.body_widgets['symbol'][t_index].grid(row=b_index, column=1)
+
         # Exchange
         self.body_widgets['exchange'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['exchange'],
-            background=row_bg,
-            foreground=palette.text_secondary,
-            font=Typography.NORMAL,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame,
+            text=trade.contract.exchange.capitalize(),
+            bg=BG_COLOR, 
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT,
+            width=self._col_width
         )
-        self.body_widgets['exchange'][t_index].grid(row=b_index, column=2, sticky="ew")
-        
+        self.body_widgets['exchange'][t_index].grid(row=b_index, column=2)
+
         # Strategy
         self.body_widgets['strategy'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['strategy'],
-            background=row_bg,
-            foreground=palette.text_primary,
-            font=Typography.NORMAL,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame, 
+            text=trade.strategy, 
+            bg=BG_COLOR,
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['strategy'][t_index].grid(row=b_index, column=3, sticky="ew")
-        
-        # Side (with color coding for buy/sell)
+        self.body_widgets['strategy'][t_index].grid(row=b_index, column=3)
+
+        # Side
         self.body_widgets['side'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['side'].upper(),
-            background=row_bg,
-            foreground=side_color,
-            font=Typography.BOLD,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame, 
+            text=trade.side.capitalize(),
+            bg=BG_COLOR, 
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['side'][t_index].grid(row=b_index, column=4, sticky="ew")
-        
-        # Quantity
+        self.body_widgets['side'][t_index].grid(row=b_index, column=4)
+
+        # Quantity (variable because the order is not always filled immediately)
+        self.body_widgets['quantity_var'][t_index] = tk.StringVar()
         self.body_widgets['quantity'][t_index] = tk.Label(
-            self._table_frame,
-            text=data['quantity'],
-            background=row_bg,
-            foreground=palette.text_primary,
-            font=Typography.NORMAL,
-            anchor="e",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame,
+            textvariable=self.body_widgets['quantity_var'][t_index],
+            bg=BG_COLOR, 
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['quantity'][t_index].grid(row=b_index, column=5, sticky="ew")
-        
-        # Status (with StringVar for dynamic updates)
+        self.body_widgets['quantity'][t_index].grid(row=b_index, column=5)
+
+        # Status
         self.body_widgets['status_var'][t_index] = tk.StringVar()
-        self.body_widgets['status_var'][t_index].set("PENDING")
         self.body_widgets['status'][t_index] = tk.Label(
-            self._table_frame,
+            self._body_frame.sub_frame,
             textvariable=self.body_widgets['status_var'][t_index],
-            background=row_bg,
-            foreground=palette.warning,  # Default to warning color for pending status
-            font=Typography.BOLD,
-            anchor="w",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            bg=BG_COLOR, 
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['status'][t_index].grid(row=b_index, column=6, sticky="ew")
-        
-        # Set up a trace on the status variable to update the color when it changes
-        self.body_widgets['status_var'][t_index].trace_add(
-            "write", 
-            lambda *args, idx=t_index: self._update_status_color(idx)
-        )
-        
-        # PNL (with StringVar for dynamic updates)
+        self.body_widgets['status'][t_index].grid(row=b_index, column=6)
+
+        # PNL
         self.body_widgets['pnl_var'][t_index] = tk.StringVar()
-        self.body_widgets['pnl_var'][t_index].set("--")
         self.body_widgets['pnl'][t_index] = tk.Label(
-            self._table_frame,
-            textvariable=self.body_widgets['pnl_var'][t_index],
-            background=row_bg,
-            foreground=palette.text_primary,  # Default color, will update when PNL is set
-            font=Typography.BOLD,
-            anchor="e",
-            padx=Spacing.XS,
-            pady=Spacing.S
+            self._body_frame.sub_frame,
+            textvariable=self.body_widgets['pnl_var'][t_index], 
+            bg=BG_COLOR,
+            fg=FG_COLOR_2, 
+            font=GLOBAL_FONT, 
+            width=self._col_width
         )
-        self.body_widgets['pnl'][t_index].grid(row=b_index, column=7, sticky="ew")
-        
-        # Set up a trace on the PNL variable to update the color when it changes
-        self.body_widgets['pnl_var'][t_index].trace_add(
-            "write", 
-            lambda *args, idx=t_index: self._update_pnl_color(idx)
-        )
-        
-        # Increment row index for next addition
+        self.body_widgets['pnl'][t_index].grid(row=b_index, column=7)
+
         self._body_index += 1
-    
-    def _update_status_color(self, index):
-        """Update the color of the status label based on its value"""
-        palette = ThemeManager.get_current_palette()
-        status = self.body_widgets['status_var'][index].get()
-        
-        if status == "COMPLETED":
-            self.body_widgets['status'][index].config(foreground=palette.success)
-        elif status == "CANCELED":
-            self.body_widgets['status'][index].config(foreground=palette.error)
-        elif status == "PENDING":
-            self.body_widgets['status'][index].config(foreground=palette.warning)
-        else:
-            self.body_widgets['status'][index].config(foreground=palette.text_primary)
-    
-    def _update_pnl_color(self, index):
-        """Update the color of the PNL label based on its value"""
-        palette = ThemeManager.get_current_palette()
-        pnl_text = self.body_widgets['pnl_var'][index].get()
-        
-        if pnl_text == "--":
-            self.body_widgets['pnl'][index].config(foreground=palette.text_primary)
-            return
-            
-        try:
-            # Remove any currency symbols and parse as float
-            pnl_value = float(pnl_text.replace('$', '').replace(',', ''))
-            
-            if pnl_value > 0:
-                self.body_widgets['pnl'][index].config(foreground=palette.chart_up)
-            elif pnl_value < 0:
-                self.body_widgets['pnl'][index].config(foreground=palette.chart_down)
-            else:
-                self.body_widgets['pnl'][index].config(foreground=palette.text_primary)
-        except ValueError:
-            # If parsing fails, use default color
-            self.body_widgets['pnl'][index].config(foreground=palette.text_primary)
-    
-    def update_trade(self, time_index: str, status: str = None, pnl: str = None):
-        """
-        Update the status and/or PNL of an existing trade.
-        
-        Args:
-            time_index: The time index of the trade to update
-            status: New status value (optional)
-            pnl: New PNL value (optional)
-        """
-        if time_index not in self.body_widgets['time']:
-            return
-            
-        if status is not None:
-            self.body_widgets['status_var'][time_index].set(status)
-            
-        if pnl is not None:
-            self.body_widgets['pnl_var'][time_index].set(pnl)

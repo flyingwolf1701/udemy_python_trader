@@ -386,3 +386,10 @@ FG_COLOR = ThemeManager.get_color("text_primary")
 FG_COLOR_2 = ThemeManager.get_color("text_accent")
 GLOBAL_FONT = Typography.NORMAL
 BOLD_FONT = Typography.BOLD
+
+# BG_COLOR = "gray12"
+# BG_COLOR_2 = "#1c2c5c"
+# FG_COLOR = "white"
+# FG_COLOR_2 = "SteelBlue1"
+# GLOBAL_FONT = ("Calibri", 11, "normal")
+# BOLD_FONT = ("Calibri", 11, "bold")
